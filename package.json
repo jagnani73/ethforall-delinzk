@@ -1,0 +1,8 @@
+{
+  "name": "ethforall-delinzk",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:client": "cd client && yarn dev",
+    "dev:server": "cd server && yarn dev"
+  }
+}
