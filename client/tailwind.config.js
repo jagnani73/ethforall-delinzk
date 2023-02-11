@@ -8,8 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        onyx: "#414141",
+        "pale-purple": "#F8ECFF",
         "slate-blue": "#7F56D9",
-        onyx: "#444649",
       },
     },
   },

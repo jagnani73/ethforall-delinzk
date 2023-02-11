@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply text-onyx;
+html,
+body,
+#__next {
+  @apply w-full h-full p-0 m-0 text-onyx bg-pale-purple;
 }

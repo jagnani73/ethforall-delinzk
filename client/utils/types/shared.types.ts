@@ -70,3 +70,11 @@ export type CustomFieldTypes =
 export interface LayoutProps {
   children: React.ReactNode;
 }
+
+export interface ButtonProps
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  primary: boolean;
+}
