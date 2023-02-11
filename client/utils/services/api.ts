@@ -11,9 +11,8 @@ const apiInstance: AxiosInstance = axios.create({
 });
 
 export const AdminLogin = async (input: {
-  email: string;
-  password: string;
-  secret: string;
+  admin_email: string;
+  admin_password: string;
 }): Promise<string> => {
   const { data } = await apiInstance.post("/admin/log-in", input);
 
