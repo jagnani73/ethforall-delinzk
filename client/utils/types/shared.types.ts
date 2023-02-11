@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface FieldClassnames {
   wrapper?: string;
   input?: string;
@@ -77,4 +75,15 @@ export interface ButtonProps
     HTMLButtonElement
   > {
   primary: boolean;
+}
+
+export interface QRPageProps {
+  heading?: React.ReactNode;
+  description?: React.ReactNode;
+  qr: string;
+  footer?: React.ReactNode;
+}
+
+export interface MessageProps {
+  children: React.ReactNode;
 }

@@ -5,9 +5,9 @@ import { OrganizationOnboarding } from "@/components/organization/onboarding";
 import { OrgSignupComplete } from "@/utils/services/api";
 
 const OrganizationOnboardingPage: NextPage<OrganizationOnboardingPageProps> = ({
-  qr,
+  linkQR,
 }) => {
-  return <OrganizationOnboarding qr={qr} />;
+  return <OrganizationOnboarding linkQR={linkQR} />;
 };
 
 export default OrganizationOnboardingPage;
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps<
 
     return {
       props: {
-        qr: await OrgSignupComplete(ctx.query?.reqId as string),
+        linkQR: await OrgSignupComplete(ctx.query?.reqId as string),
       },
     };
   } catch (err) {
