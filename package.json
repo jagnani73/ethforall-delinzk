@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "dev:client": "cd client && yarn dev",
-    "dev:server": "cd server && yarn dev"
+    "dev:server": "cd server && yarn dev",
+    "install:server": "cd server && yarn",
+    "install:client": "cd client && yarn",
+    "install": "yarn install:server  && yarn install:client",
+    "build:server": "cd server && yarn build",
+    "build:client": "cd client && yarn build",
+    "build": "yarn build:server  && yarn build:client"
   }
 }
