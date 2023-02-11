@@ -8,7 +8,7 @@ import { OrgSignin } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
 import { Button } from "@/components/shared";
 
-const OrganizationsSignin: React.FC = () => {
+const OrganizationSignin: React.FC = () => {
   const [QRData, setQRData] = useState<string | null>(null);
 
   const socket = useRef<Socket>();
@@ -22,7 +22,7 @@ const OrganizationsSignin: React.FC = () => {
 
   useEffect(() => {
     if (onboarding)
-      replace("/organizations/signin", undefined, { shallow: true });
+      replace("/organization/signin", undefined, { shallow: true });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboarding]);
@@ -112,4 +112,4 @@ const OrganizationsSignin: React.FC = () => {
   );
 };
 
-export default OrganizationsSignin;
+export default OrganizationSignin;

@@ -3,10 +3,10 @@ import { io } from "socket.io-client";
 import { useEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 
-import type { OrganizationsOnboardingProps } from "@/utils/types/organizations.types";
+import type { OrganizationOnboardingProps } from "@/utils/types/organization.types";
 import { useRouter } from "next/router";
 
-const OrganizationsOnboarding: React.FC<OrganizationsOnboardingProps> = ({
+const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
   qr,
 }) => {
   const socket = useRef<Socket>();
@@ -19,7 +19,7 @@ const OrganizationsOnboarding: React.FC<OrganizationsOnboardingProps> = ({
 
   useEffect(() => {
     if (reqId) {
-      replace("/organizations/onboarding", undefined, { shallow: true });
+      replace("/organization/onboarding", undefined, { shallow: true });
 
       socket.current = io(`ws://delinzk.loca.lt`, {
         reconnectionDelayMax: 10000,
@@ -32,7 +32,7 @@ const OrganizationsOnboarding: React.FC<OrganizationsOnboardingProps> = ({
       });
 
       socket.current.on("auth", () => {
-        push("/organizations/signin?onboarding=true");
+        push("/organization/signin?onboarding=true");
       });
     }
 
@@ -61,4 +61,4 @@ const OrganizationsOnboarding: React.FC<OrganizationsOnboardingProps> = ({
   );
 };
 
-export default OrganizationsOnboarding;
+export default OrganizationOnboarding;

@@ -74,7 +74,7 @@ const Home: React.FC = () => {
               ))}
             </div>
 
-            <Link href={selectedRole ? `/${selectedRole}` : "#"}>
+            <Link href={selectedRole ? `/${selectedRole}/signin` : "#"}>
               <Button primary={true} className="w-full text-xl mt-6 px-6">
                 Get started today
               </Button>

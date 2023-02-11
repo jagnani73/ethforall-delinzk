@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 
-import { OrganizationsSignin } from "@/components/organizations/signin";
+import { OrganizationSignin } from "@/components/organization/signin";
 
 const OrganizationsSigninPage: NextPage = () => {
-  return <OrganizationsSignin />;
+  return <OrganizationSignin />;
 };
 
 export default OrganizationsSigninPage;

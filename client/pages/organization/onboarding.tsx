@@ -1,19 +1,19 @@
 import type { GetServerSideProps, NextPage } from "next";
 
-import type { OrganizationsOnboardingPageProps } from "@/utils/types/organizations.types";
-import { OrganizationsOnboarding } from "@/components/organizations/onboarding";
+import type { OrganizationOnboardingPageProps } from "@/utils/types/organization.types";
+import { OrganizationOnboarding } from "@/components/organization/onboarding";
 import { OrgSignupComplete } from "@/utils/services/api";
 
-const OrganizationsOnboardingPage: NextPage<
-  OrganizationsOnboardingPageProps
-> = ({ qr }) => {
-  return <OrganizationsOnboarding qr={qr} />;
+const OrganizationOnboardingPage: NextPage<OrganizationOnboardingPageProps> = ({
+  qr,
+}) => {
+  return <OrganizationOnboarding qr={qr} />;
 };
 
-export default OrganizationsOnboardingPage;
+export default OrganizationOnboardingPage;
 
 export const getServerSideProps: GetServerSideProps<
-  OrganizationsOnboardingPageProps
+  OrganizationOnboardingPageProps
 > = async (ctx) => {
   try {
     if (!ctx.query?.reqId)
