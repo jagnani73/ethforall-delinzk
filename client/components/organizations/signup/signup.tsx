@@ -152,7 +152,7 @@ const OrganizationsSignup: React.FC = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-6">
+              <Button primary type="submit" className="w-full mt-6">
                 Signup
               </Button>
             </Form>

@@ -69,7 +69,7 @@ const OrganizationsSignin: React.FC = () => {
               Signin as an Organization
             </h3>
 
-            <Button onClick={signinHandler} className="w-32">
+            <Button primary onClick={signinHandler} className="w-32">
               Sign In
             </Button>
 
