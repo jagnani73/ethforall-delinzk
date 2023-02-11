@@ -40,19 +40,6 @@ const Admin: React.FC = () => {
           },
         ],
       },
-      {
-        id: "admin_secret",
-        name: "admin_secret",
-        type: "password",
-        placeholder: "Secret",
-        validationtype: "string",
-        validations: [
-          {
-            type: "required",
-            params: ["this field is mandatory"],
-          },
-        ],
-      },
     ],
     []
   );
@@ -70,10 +57,8 @@ const Admin: React.FC = () => {
   }, [authenticated]);
 
   const submitHandler = useCallback(
-    async (values: { email: string; password: string; secret: string }) => {
+    async (values: { admin_email: ""; admin_password: "" }) => {
       try {
-        console.log(values);
-
         setAuthenticated(await AdminLogin(values));
       } catch (error) {
         console.error(error);
@@ -107,7 +92,7 @@ const Admin: React.FC = () => {
         <Formik
           enableReinitialize
           onSubmit={submitHandler}
-          initialValues={{ email: "", password: "", secret: "" }}
+          initialValues={{ admin_email: "", admin_password: "" }}
           validationSchema={Yup.object().shape(
             FIELDS.reduce(CreateYupSchema, {})
           )}

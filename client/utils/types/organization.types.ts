@@ -1,7 +1,16 @@
 export interface OrganizationOnboardingPageProps {
-  qr: Object;
+  linkQR: Object;
 }
 
 export interface OrganizationOnboardingProps {
-  qr: Object;
+  linkQR: Object;
+}
+
+export interface OrganizationSigninPageProps {
+  qr: string;
+  sessionId: string;
+}
+
+export interface OrganizationSigninProps {
+  qr: string;
 }
