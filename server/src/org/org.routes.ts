@@ -13,6 +13,7 @@ import {
   generateBasicAuthQr,
   storeOrgDid,
   clearSignupCache,
+  generateOrgClaim,
 } from "./org.service";
 import { uploadLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
@@ -158,7 +159,9 @@ const handleOrgSignUpCompleteCallback = async (
     console.dir(result, { depth: null });
     const orgDid = result?.from!;
     const orgId = await storeOrgDid(orgDid, sessionId);
+    await generateOrgClaim(sessionId);
     await clearSignupCache(orgId, sessionId);
+
     res.send("OK");
   } catch (err) {
     next(err);

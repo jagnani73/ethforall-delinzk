@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
 import { sign } from "jsonwebtoken";
+import axios from "axios";
 
 import SupabaseService from "../services/supabase.service";
+import CacheService from "../services/cache.service";
 
 export const storeAdminCredentials = async (
   email: string,
@@ -59,20 +61,20 @@ export const verifyAdminCredentials = async (
   }
 };
 
-export const createJWToken = async(email: string) => {
-    const token = sign(
-      {
-        email: email,
-        admin: true
-      },
-      process.env.SECRET_KEY!,
-      {
-        issuer: "deLinZK",
-        expiresIn: "24h",
-      }
-    );
-    return token;
-}
+export const createJWToken = async (email: string) => {
+  const token = sign(
+    {
+      email: email,
+      admin: true,
+    },
+    process.env.SECRET_KEY!,
+    {
+      issuer: "deLinZK",
+      expiresIn: "24h",
+    }
+  );
+  return token;
+};
 export const fetchOrganizations = async () => {
   const db = await SupabaseService.getSupabase();
   const { data, error } = await db!.from("orgs").select().eq("did", "");
@@ -88,4 +90,24 @@ export const fetchOrganizations = async () => {
   }
 
   return data;
+};
+
+export const getAdminAuthToken = async (): Promise<string> => {
+  const cache = await CacheService.getCache();
+  const authToken = await cache?.get("delinzk:admin:auth-token");
+  if (authToken) {
+    return authToken;
+  } else {
+    const { data } = await axios.post(
+      "https://api-staging.polygonid.com/v1/orgs/sign-in",
+      {
+        email: process.env.ADMIN_EMAIL!,
+        password: process.env.ADMIN_PASSWORD!,
+      }
+    );
+    await cache?.set("delinzk:admin:auth-token", data.token, {
+      EX: 86400,
+    });
+    return data.token;
+  }
 };
