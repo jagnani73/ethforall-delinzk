@@ -1,12 +1,19 @@
 import { auth, protocol, loaders, resolver } from "@iden3/js-iden3-auth";
 import { v4 } from "uuid";
 import { join } from "path";
+import axios from "axios";
 
 import TunnelService from "../services/tunnel.service";
 import CacheService from "../services/cache.service";
 import SocketService from "../services/socket.service";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
+import { getAdminAuthToken } from "../admin/admin.service";
+
+type Attributes = Array<{
+  attributeKey: string;
+  attributeValue: number;
+}>;
 
 export const generateAuthQr = async (sessionId: string) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
@@ -232,7 +239,7 @@ export const sendEmailToOrganization = async (
     data[0].email,
     "Congratulations 🥳! You have been approved on deLinZK",
     {
-      url: `${process.env.SUBDOMAIN_FE}/organizations/onboarding?reqId=${requestId}`,
+      url: `${process.env.SUBDOMAIN_FE}/organization/onboarding?reqId=${requestId}`,
     },
     []
   );
@@ -291,4 +298,90 @@ export const clearSignupCache = async (orgId: number, sessionId: string) => {
   await cache?.DEL(`delinzk:auth-request:${sessionId}`);
   await cache?.DEL(`delinzk:request-id:${sessionId}`);
   await cache?.DEL(`delinzk:verification-pending:${orgId}`);
+};
+
+const generateClaim = async (
+  schemaId: string,
+  attributes: Attributes
+): Promise<{
+  qrCode: Record<string, any>;
+  claimOfferId: string;
+  claimOfferSessionId: string;
+}> => {
+  const authToken = await getAdminAuthToken();
+  const { data: data1 } = await axios.post(
+    `https://api-staging.polygonid.com/v1/issuers/${process.env.POLYGONID_ISSUERID}/schemas/${schemaId}/offers`,
+    {
+      attributes: attributes,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  const claimOfferId = data1.id;
+  console.log("Claim offer ID:", claimOfferId);
+  const { data: data2 } = await axios.post(
+    `https://api-staging.polygonid.com/v1/offers-qrcode/${claimOfferId}`
+  );
+  const qrCode = data2.qrcode;
+  const claimOfferSessionId = data2.sessionID;
+  console.log("Claim offer auth generated:");
+  console.dir(qrCode, { depth: null});
+  return {
+    qrCode: qrCode,
+    claimOfferId: claimOfferId,
+    claimOfferSessionId: claimOfferSessionId,
+  };
+};
+
+export const generateOrgClaim = async (sessionId: string) => {
+  const claimParams: Attributes = [
+    {
+      attributeKey: "verified",
+      attributeValue: 1,
+    },
+  ];
+  const {
+    qrCode: claimQr,
+    claimOfferId,
+    claimOfferSessionId,
+  } = await generateClaim(
+    process.env.POLYGONID_CLAIMSCHEMAID_VERIFIED_ORG!,
+    claimParams
+  );
+  const socket = await SocketService.getSocket();
+  socket.to(sessionId).emit("org-auth", JSON.stringify(claimQr));
+  Promise.all([checkClaimStatus(claimOfferId, claimOfferSessionId)]).then(
+    (qrCodeData) => {
+      socket.to(sessionId).emit("org-claim", qrCodeData[0]);
+    }
+  );
+};
+
+const checkClaimStatus = async (offerId: string, sessionId: string) => {
+  while (true) {
+    try {
+      const { data } = await axios.get(
+        `https://api-staging.polygonid.com/v1/offers-qrcode/${offerId}?sessionID=${sessionId}`
+      );
+      if (data.status === "done") {
+        console.log(
+          "Claim offer ID",
+          offerId,
+          "session ID",
+          sessionId,
+          "QR generated:"
+        );
+        console.dir(data.qrcode, { depth: null });
+        return data.qrcode;
+      }
+      await new Promise((resolve, reject) =>
+        setTimeout(() => resolve(0), 1000)
+      );
+    } catch (err) {
+      break;
+    }
+  }
 };
