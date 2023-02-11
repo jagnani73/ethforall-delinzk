@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
-import { Button, CustomField } from "@/components/shared";
+import { Button, CustomField, Message } from "@/components/shared";
 import { CreateYupSchema } from "@/utils/functions";
 import { OrgSignup } from "@/utils/services/api";
 import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
@@ -13,7 +13,9 @@ const OrganizationsSignup: React.FC = () => {
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
       wrapper: "w-full",
-      input: "rounded p-4 w-full",
+      input:
+        "rounded p-4 w-full bg-onyx bg-opacity-5 border-2 border-slate-blue border-opacity-50 focus:border-opacity-100 transition-all outline-none",
+      description: "text-red-400 text-sm font-medium mt-0.5 pl-1",
     }),
     []
   );
@@ -24,7 +26,7 @@ const OrganizationsSignup: React.FC = () => {
         id: "org_name",
         name: "org_name",
         type: "text",
-        placeholder: "Name of Organization",
+        placeholder: "Enter the organization name",
         validationtype: "string",
         validations: [
           {
@@ -38,7 +40,7 @@ const OrganizationsSignup: React.FC = () => {
         id: "org_industry",
         name: "org_industry",
         type: "text",
-        placeholder: "Industry",
+        placeholder: "Enter the type of Industry",
         validationtype: "string",
         validations: [
           {
@@ -52,7 +54,7 @@ const OrganizationsSignup: React.FC = () => {
         id: "org_size",
         name: "org_size",
         type: "number",
-        placeholder: "Team Size",
+        placeholder: "What is the team size?",
         validationtype: "string",
         validations: [
           {
@@ -66,7 +68,7 @@ const OrganizationsSignup: React.FC = () => {
         id: "org_tagline",
         name: "org_tagline",
         type: "text",
-        placeholder: "Tagline",
+        placeholder: "What is your tagline?",
         validationtype: "string",
         validations: [
           {
@@ -80,7 +82,7 @@ const OrganizationsSignup: React.FC = () => {
         id: "org_email",
         name: "org_email",
         type: "email",
-        placeholder: "Email",
+        placeholder: "Enter the email address",
         validationtype: "string",
         validations: [
           {
@@ -110,7 +112,7 @@ const OrganizationsSignup: React.FC = () => {
   }, []);
 
   return (
-    <main className="w-full mt-20">
+    <Message>
       {!received ? (
         <Formik
           enableReinitialize
@@ -120,13 +122,19 @@ const OrganizationsSignup: React.FC = () => {
             FIELDS.reduce(CreateYupSchema, {})
           )}
         >
-          {({ errors, touched, setFieldValue }) => (
-            <Form className="bg-gray-100 flex flex-col justify-center items-center rounded-lg py-8 px-12 mx-auto w-fit">
-              <h3 className="font-medium text-4xl text-center mb-8">
-                A welcome message line
-              </h3>
+          {({ errors, touched, values, setFieldValue }) => (
+            <Form className="w-96">
+              <div className="text-center mb-8">
+                <h3 className="font-medium text-4xl text-center mb-4">
+                  Welcome
+                </h3>
 
-              <div className="flex flex-col gap-y-4 w-full">
+                <p className="text-onyx text-opacity-75">
+                  Please fill out the following details
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-y-2 w-full">
                 {FIELDS.map((field) => (
                   <CustomField
                     key={field.name}
@@ -141,15 +149,34 @@ const OrganizationsSignup: React.FC = () => {
                   />
                 ))}
 
-                <input
-                  id="org_license"
-                  name="org_license"
-                  type="file"
-                  required
-                  onChange={(e) =>
-                    setFieldValue("org_license", e.target.files![0])
-                  }
-                />
+                <label
+                  htmlFor="org_license"
+                  className={`${CLASSNAMES.input} cursor-pointer`}
+                >
+                  <span
+                    className={
+                      // @ts-ignore
+                      values["org_license"]?.name
+                        ? ""
+                        : "text-onyx text-opacity-50"
+                    }
+                  >
+                    {/* @ts-ignore */}
+                    {values["org_license"]?.name ??
+                      "Upload the organization license"}
+                  </span>
+
+                  <input
+                    id="org_license"
+                    name="org_license"
+                    className="hidden"
+                    type="file"
+                    required
+                    onChange={(e) =>
+                      setFieldValue("org_license", e.target.files![0])
+                    }
+                  />
+                </label>
               </div>
 
               <Button primary type="submit" className="w-full mt-6">
@@ -159,7 +186,7 @@ const OrganizationsSignup: React.FC = () => {
           )}
         </Formik>
       ) : (
-        <div className="bg-gray-100 flex flex-col justify-center items-center rounded-lg py-8 px-12 mx-auto w-fit mt-20">
+        <>
           <h2 className="text-4xl font-semibold">Congratulations 🎉</h2>
 
           <h3 className="mt-8 text-xl">
@@ -167,13 +194,13 @@ const OrganizationsSignup: React.FC = () => {
             same.
           </h3>
 
-          <p className="mt-6">
+          <p className="mt-6 text-onyx text-opacity-75">
             Verification can take a few days, you will receive an email when you
-            have been successfully verified!
+            have been successfully verified.
           </p>
-        </div>
+        </>
       )}
-    </main>
+    </Message>
   );
 };
 
