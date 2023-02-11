@@ -328,7 +328,7 @@ const generateClaim = async (
   const qrCode = data2.qrcode;
   const claimOfferSessionId = data2.sessionID;
   console.log("Claim offer auth generated:");
-  console.dir(qrCode, { depth: null});
+  console.dir(qrCode, { depth: null });
   return {
     qrCode: qrCode,
     claimOfferId: claimOfferId,
@@ -355,7 +355,7 @@ export const generateOrgClaim = async (sessionId: string) => {
   socket.to(sessionId).emit("org-auth", JSON.stringify(claimQr));
   Promise.all([checkClaimStatus(claimOfferId, claimOfferSessionId)]).then(
     (qrCodeData) => {
-      socket.to(sessionId).emit("org-claim", qrCodeData[0]);
+      socket.to(sessionId).emit("org-claim", JSON.stringify(qrCodeData[0]));
     }
   );
 };
