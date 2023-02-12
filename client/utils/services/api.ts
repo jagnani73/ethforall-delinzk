@@ -98,7 +98,7 @@ export const EmpSignupQR = async (): Promise<{
   qr: string;
   sessionId: string;
 }> => {
-  const { data, headers } = await apiInstance.get("/employee/sign-up");
+  const { data, headers } = await apiInstance.get("/user/sign-up");
 
   return {
     qr: data,
@@ -107,7 +107,7 @@ export const EmpSignupQR = async (): Promise<{
 };
 
 export const EmpSignupForm = async (data: FormData): Promise<void> => {
-  await apiInstance.post("/employee/sign-up", data);
+  await apiInstance.post("/user/sign-up-complete", data);
 
   return;
 };
