@@ -9,7 +9,7 @@ const QRPage: React.FC<QRPageProps> = ({
   footer,
 }) => {
   return (
-    <div className="flex my-auto w-fit border-l-8 border-b-8 mx-auto border-slate-blue">
+    <div className="flex my-auto w-fit effect-shadow mx-auto">
       <main className="w-full max-w-3xl mx-auto py-6 px-12 bg-white">
         {heading && <h2 className="text-2xl font-semibold">{heading}</h2>}
 

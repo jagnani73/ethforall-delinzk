@@ -33,11 +33,11 @@ const Home: React.FC = () => {
     <section className="relative w-full">
       <div className="flex w-9/12 mx-auto h-full items-center">
         <div className="w-full flex flex-col h-full p-8 justify-center">
-          <h1 className="group text-6xl flex flex-col h-40">
-            <span className="bg-white py-2 px-2 w-fit border-slate-blue group-hover:border-0 transition-all duration-150 border-l-8">
-              Buidling a
+          <h1 className="group text-6xl flex flex-col h-40 whitespace-nowrap group">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:shadow-none z-10">
+              BUIDLing a
             </span>
-            <span className="bg-white pb-2 px-2 w-fit border-slate-blue group-hover:border-0 transition-all duration-150 border-l-8 border-b-8">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:shadow-none">
               something amazing
             </span>
           </h1>
