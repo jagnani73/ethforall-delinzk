@@ -13,8 +13,8 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
 }) => {
   const socket = useRef<Socket>();
 
-  const [qr, setQr] = useState<string>(JSON.stringify(linkQR));
-  const [phase, setPhase] = useState<0 | 1 | 2>(2);
+  const [qr, setQr] = useState<string>(linkQR);
+  const [phase, setPhase] = useState<0 | 1 | 2>(0);
 
   const {
     query: { reqId },

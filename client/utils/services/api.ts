@@ -52,12 +52,12 @@ export const OrgSignup = async (data: FormData): Promise<void> => {
   return;
 };
 
-export const OrgSignupComplete = async (reqId: string): Promise<Object> => {
+export const OrgSignupComplete = async (reqId: string): Promise<string> => {
   const { data } = await apiInstance.get("/org/sign-up-complete", {
     params: { reqId },
   });
 
-  return data;
+  return JSON.stringify(data);
 };
 
 export const OrgSignin = async (): Promise<{

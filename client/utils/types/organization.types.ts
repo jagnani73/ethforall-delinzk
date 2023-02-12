@@ -1,11 +1,11 @@
 import type { CustomFieldTypes } from "./shared.types";
 
 export interface OrganizationOnboardingPageProps {
-  linkQR: Object;
+  linkQR: string;
 }
 
 export interface OrganizationOnboardingProps {
-  linkQR: Object;
+  linkQR: string;
 }
 
 export interface OrganizationSigninPageProps {
