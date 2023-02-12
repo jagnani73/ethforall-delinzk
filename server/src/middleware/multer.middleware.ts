@@ -5,6 +5,10 @@ const uploadMiddleWare = multer({
   storage: storage,
 });
 
-export const uploadLicense = () => {
+export const parseLicense = () => {
   return uploadMiddleWare.single("org_license");
+};
+
+export const parseUserPhoto = () => {
+  return uploadMiddleWare.single("employee_photo");
 };
