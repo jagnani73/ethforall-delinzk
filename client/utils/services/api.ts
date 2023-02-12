@@ -2,6 +2,7 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 
 import type { AdminOrg } from "../types/admin.types";
+import type { EmployeeType } from "../types/employee.types";
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: "https://delinzk.loca.lt/api/v1",
@@ -129,4 +130,23 @@ export const EmpClaim = async (reqId: string): Promise<string> => {
   });
 
   return JSON.stringify(data);
+};
+
+export const EmpProfile = async (token: string): Promise<EmployeeType> => {
+  const { data } = await apiInstance.get("/user/profile", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return data;
+};
+
+export const EmpProfileUpdate = async (
+  token: string,
+  data: FormData
+): Promise<void> => {
+  await apiInstance.put("/employee/sign-up", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return;
 };

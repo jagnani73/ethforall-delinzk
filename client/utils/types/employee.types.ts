@@ -25,3 +25,16 @@ export interface EmployeeSigninProps {
   qr: string;
   sessionId: string;
 }
+
+export type EmployeeType = {
+  name: string;
+  username: string;
+  industry: string;
+  about: string;
+  email: string;
+  photo: string;
+};
+
+export interface EmployeeProfileProps {
+  employee: EmployeeType;
+}
