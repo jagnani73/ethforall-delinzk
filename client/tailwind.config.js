@@ -12,6 +12,9 @@ module.exports = {
         "pale-purple": "#F8ECFF",
         "slate-blue": "#7F56D9",
       },
+      fontFamily: {
+        "modern-era": ["ModernEra", "sans-serif"],
+      },
     },
   },
   plugins: [],
