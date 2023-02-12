@@ -64,7 +64,8 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
             <span className="font-semibold text-slate-blue">
               Polygon ID application
             </span>{" "}
-            only to connect your wallet address to deLinZK.
+            to connect your wallet address to{" "}
+            <span className="font-bold">deLinZK</span>.
           </>
         ),
       },
@@ -72,7 +73,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
         heading: (
           <>
             <span className="text-slate-blue">2/3</span> Authenticate your
-            wallet address with deLinZK!
+            wallet address!
           </>
         ),
         description: (
@@ -85,28 +86,28 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
       {
         heading: (
           <>
-            <span className="text-slate-blue">3/3</span> Claim your offer for a
+            <span className="text-slate-blue">3/3</span> Claim your offer as a
             verified organization!
           </>
         ),
         description: (
           <>
             One last step before you are finally onboarded! This is the claim
-            that you will own. It states that your organization is verified on
-            deLinZK.
+            that you will own. It is proof that your organization is verified
+            with <span className="font-bold">deLinZK</span>.
           </>
         ),
         footer: (
           <>
-            <p className="text-onyx text-opacity-75 text-center mt-8 text-sm">
-              You are all done now!
+            <p className="text-onyx text-opacity-75 text-center mt-8 text-sm font-medium">
+              Once claimed, you are all done now!
             </p>
 
             <div className="flex justify-evenly mt-6">
               <Link href="/">
                 <Button
                   primary={false}
-                  className="border-2 border-slate-blue px-8"
+                  className="border-2 border-slate-blue px-4 py-2 text-sm"
                 >
                   Go home
                 </Button>
@@ -115,7 +116,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
               <Link href="/organization/signin">
                 <Button
                   primary={true}
-                  className="border-2 border-slate-blue px-12"
+                  className="border-2 border-slate-blue px-8 py-2 text-sm"
                 >
                   Signin
                 </Button>
