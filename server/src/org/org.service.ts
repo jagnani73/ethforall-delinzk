@@ -11,7 +11,7 @@ import EmailService from "../services/email.service";
 import { getAdminAuthToken } from "../admin/admin.service";
 import TokenService from "../services/token.service";
 
-type Attributes = Array<{
+export type Attributes = Array<{
   attributeKey: string;
   attributeValue: number;
 }>;
@@ -310,16 +310,12 @@ export const clearSignupCache = async (orgId: number, sessionId: string) => {
   await cache?.DEL(`delinzk:verification-pending:${orgId}`);
 };
 
-const generateClaim = async (
+export const generateClaimOffer = async (
   schemaId: string,
   attributes: Attributes
-): Promise<{
-  qrCode: Record<string, any>;
-  claimOfferId: string;
-  claimOfferSessionId: string;
-}> => {
+) => {
   const authToken = await getAdminAuthToken();
-  const { data: data1 } = await axios.post(
+  const { data } = await axios.post(
     `https://api-staging.polygonid.com/v1/issuers/${process.env.POLYGONID_ISSUERID}/schemas/${schemaId}/offers`,
     {
       attributes: attributes,
@@ -330,13 +326,24 @@ const generateClaim = async (
       },
     }
   );
-  const claimOfferId = data1.id;
+  return data.id;
+};
+
+const generateClaim = async (
+  schemaId: string,
+  attributes: Attributes
+): Promise<{
+  qrCode: Record<string, any>;
+  claimOfferId: string;
+  claimOfferSessionId: string;
+}> => {
+  const claimOfferId = await generateClaimOffer(schemaId, attributes);
   console.log("Claim offer ID:", claimOfferId);
-  const { data: data2 } = await axios.post(
+  const { data: data1 } = await axios.post(
     `https://api-staging.polygonid.com/v1/offers-qrcode/${claimOfferId}`
   );
-  const qrCode = data2.qrcode;
-  const claimOfferSessionId = data2.sessionID;
+  const qrCode = data1.qrcode;
+  const claimOfferSessionId = data1.sessionID;
   console.log("Claim offer auth generated:");
   console.dir(qrCode, { depth: null });
   return {
@@ -394,4 +401,27 @@ const checkClaimStatus = async (offerId: string, sessionId: string) => {
       break;
     }
   }
+};
+
+export const storeClaimOffer = async (claimOfferId: string) => {
+  const reqId = v4();
+  const cache = await CacheService.getCache();
+  await cache?.set(`delinzk:claim-pending:${reqId}`, claimOfferId, {
+    EX: 604800,
+  });
+  return reqId;
+};
+
+export const sendClaimOfferEmail = async (email: string, reqId: string) => {
+  const rawEmail = await EmailService.generateEmail(
+    "org-claim-offer",
+    email,
+    "Hello there, hustler 🧑‍💻! You have received a new Proof-of-Employment on deLinZK",
+    {
+      url: `${process.env.SUBDOMAIN_FE}/employee/claim?reqId=${reqId}`,
+    },
+    []
+  );
+
+  await EmailService.sendEmail(email, rawEmail);
 };
