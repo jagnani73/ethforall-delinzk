@@ -5,8 +5,12 @@ import * as Yup from "yup";
 import type { ClaimSchema } from "@/utils/types/organization.types";
 import { Button, CustomField } from "@/components/shared";
 import { CreateYupSchema, DatesToTenure } from "@/utils/functions";
+import { OrgCreateClaim } from "@/utils/services/api";
+import { useAuth } from "@/utils/store/auth";
 
-const Claims: React.FC = () => {
+const OrganizationClaims: React.FC = () => {
+  const { JWE } = useAuth();
+
   const CLAIMS = useMemo<ClaimSchema[]>(
     () => [
       {
@@ -41,16 +45,19 @@ const Claims: React.FC = () => {
     []
   );
 
-  const submitHandler = useCallback(async (values: Record<string, any>) => {
-    const employee_tenure: number = DatesToTenure(
-      values["employee_start_date"],
-      values["employee_end_date"] ?? null
-    );
+  const submitHandler = useCallback(
+    async (values: Record<string, any>) => {
+      const employee_tenure: number = DatesToTenure(
+        values["employee_start_date"],
+        values["employee_end_date"] ?? null
+      );
 
-    console.log({ employee_tenure, employee_email: values["employee_email"] });
+      await OrgCreateClaim(JWE!, employee_tenure, values["employee_email"]);
 
-    // TODO: resetForm on success toast
-  }, []);
+      // TODO: resetForm on success toast
+    },
+    [JWE]
+  );
 
   return (
     <main>
@@ -103,4 +110,4 @@ const Claims: React.FC = () => {
   );
 };
 
-export default Claims;
+export default OrganizationClaims;

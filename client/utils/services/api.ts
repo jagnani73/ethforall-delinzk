@@ -72,6 +72,27 @@ export const OrgSignin = async (): Promise<{
   };
 };
 
+export const OrgCreateClaim = async (
+  token: string,
+  employee_tenure: number,
+  employee_email: string
+): Promise<void> => {
+  await apiInstance.post(
+    "/org/create-poe",
+    {
+      employee_tenure,
+      employee_email,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return;
+};
+
 export const EmpSignupQR = async (): Promise<{
   qr: string;
   sessionId: string;

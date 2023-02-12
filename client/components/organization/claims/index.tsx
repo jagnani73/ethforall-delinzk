@@ -1,1 +1,1 @@
-export { default as Claims } from "./claims";
+export { default as OrganizationClaims } from "./claims";

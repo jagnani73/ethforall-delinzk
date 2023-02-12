@@ -33,7 +33,7 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
         },
       });
 
-      socket.current.on("emp-auth", (data) => {
+      socket.current.on("user-claim", (data) => {
         setQr(data);
         setPhase(1);
       });
@@ -47,7 +47,7 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
       {
         heading: (
           <>
-            <span className="text-slate-blue">1/3</span> Connect your Wallet
+            <span className="text-slate-blue">1/2</span> Authorize your Wallet
             Address to deLinZK!
           </>
         ),
@@ -57,24 +57,18 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
             <span className="font-semibold text-slate-blue">
               Polygon ID application
             </span>{" "}
-            only to connect your wallet address to deLinZK.
+            only, to connect your wallet address to deLinZK.
           </>
         ),
       },
       {
         heading: (
           <>
-            <span className="text-slate-blue">3/3</span> Claim your offer for a
-            verified organization!
+            <span className="text-slate-blue">2/2</span> Claim your Proof of
+            Employment!
           </>
         ),
-        description: (
-          <>
-            One last step before you are finally onboarded! This is the claim
-            that you will own. It states that your organization is verified on
-            deLinZK.
-          </>
-        ),
+        description: <>This will store the your claim.</>,
         footer: (
           <>
             <p className="text-onyx text-opacity-75 text-center mt-8 text-sm">
