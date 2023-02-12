@@ -5,11 +5,11 @@ class TokenService {
   private static jwsSecret: Uint8Array | null = null;
   private constructor() {}
   public static async initTokenService() {
-    this.publicKey = await jose.importPKCS8(
+    this.privateKey = await jose.importPKCS8(
       process.env.JWE_PRIVATEKEY!,
       "RS256"
     );
-    this.privateKey = await jose.importSPKI(
+    this.publicKey = await jose.importSPKI(
       process.env.JWE_PUBLICKEY!,
       "RS256"
     );
