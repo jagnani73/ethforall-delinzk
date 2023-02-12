@@ -6,13 +6,14 @@ import { io } from "socket.io-client";
 import type { EmployeeSignupProps } from "@/utils/types/employee.types";
 import { useAuth } from "@/utils/store/auth";
 import { QRPage } from "@/components/shared";
+import { EmpCheck } from "@/utils/services/api";
 
 const EmployeeSignin: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   const socket = useRef<Socket>();
 
   const { push } = useRouter();
 
-  const { setJWE } = useAuth();
+  const { JWE, setJWE } = useAuth();
 
   useEffect(() => {
     socket.current = io(`ws://delinzk.loca.lt`, {
@@ -27,11 +28,26 @@ const EmployeeSignin: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
 
     socket.current.on("auth", (jwe) => {
       setJWE(jwe);
-      push("/employee/profile");
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (JWE) {
+      (async () => {
+        try {
+          await EmpCheck(JWE);
+          push("/employee/profile");
+        } catch (error) {
+          console.error(error);
+        } finally {
+        }
+      })();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JWE]);
 
   return (
     <QRPage

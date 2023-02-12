@@ -116,12 +116,22 @@ export const EmpSignin = async (): Promise<{
   qr: string;
   sessionId: string;
 }> => {
-  const { data, headers } = await apiInstance.get("/employee/sign-in", {});
+  const { data, headers } = await apiInstance.get("/user/sign-in", {});
 
   return {
     qr: data,
     sessionId: headers["x-delinzk-session-id"] ?? null,
   };
+};
+
+export const EmpCheck = async (token: string): Promise<void> => {
+  await apiInstance.get("/user/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return;
 };
 
 export const EmpClaim = async (reqId: string): Promise<string> => {
