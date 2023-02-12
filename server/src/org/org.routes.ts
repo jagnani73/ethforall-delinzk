@@ -19,7 +19,7 @@ import {
   storeClaimOffer,
   sendClaimOfferEmail,
 } from "./org.service";
-import { uploadLicense } from "../middleware/multer.middleware";
+import { parseLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
 import {
   orgApproveRequest,
@@ -181,7 +181,8 @@ const handleOrgCreatePoe = async (
   next: NextFunction
 ) => {
   try {
-    const { employee_email: email, employee_tenure: tenure } = req.body as orgCreatePoeRequest;
+    const { employee_email: email, employee_tenure: tenure } =
+      req.body as orgCreatePoeRequest;
     const { id, did } = res.locals.org;
     const attributes: Attributes = [
       {
@@ -211,7 +212,7 @@ router.get("/sign-in", injectSessionId, handleOrgSignIn);
 router.post("/sign-in-callback", handleOrgSignInCallback);
 router.post(
   "/sign-up",
-  uploadLicense(),
+  parseLicense(),
   validateQuery("body", orgSignUpRequestSchema),
   handleOrgSignUp
 );
