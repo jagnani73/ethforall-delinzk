@@ -72,7 +72,7 @@ export const authVerify = async (
   );
   const sLoader = new loaders.UniversalSchemaLoader("ipfs.io");
   const ethStateResolver = new resolver.EthStateResolver(
-    "https://polygon-mumbai.g.alchemy.com/v2/zg9jQMJMTI9V76nng3UfpvP0EkYQhSiK",
+    `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_APIKEY}`,
     "0x46Fd04eEa588a3EA7e9F055dd691C688c4148ab3"
   );
   const verifier = new auth.Verifier(
