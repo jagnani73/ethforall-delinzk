@@ -71,3 +71,21 @@ export const OrgSignin = async (): Promise<{
     sessionId: headers["x-delinzk-session-id"] ?? null,
   };
 };
+
+export const EmpSignupQR = async (): Promise<{
+  qr: string;
+  sessionId: string;
+}> => {
+  const { data, headers } = await apiInstance.get("/employee/sign-up");
+
+  return {
+    qr: data,
+    sessionId: headers["x-delinzk-session-id"] ?? null,
+  };
+};
+
+export const EmpSignupForm = async (data: FormData): Promise<void> => {
+  await apiInstance.post("/employee/sign-up", data);
+
+  return;
+};
