@@ -89,3 +89,15 @@ export const EmpSignupForm = async (data: FormData): Promise<void> => {
 
   return;
 };
+
+export const EmpSignin = async (): Promise<{
+  qr: string;
+  sessionId: string;
+}> => {
+  const { data, headers } = await apiInstance.get("/employee/sign-in", {});
+
+  return {
+    qr: data,
+    sessionId: headers["x-delinzk-session-id"] ?? null,
+  };
+};

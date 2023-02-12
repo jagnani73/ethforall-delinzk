@@ -4,14 +4,14 @@ import type { OrganizationSigninPageProps } from "@/utils/types/organization.typ
 import { OrgSignin } from "@/utils/services/api";
 import { OrganizationSignin } from "@/components/organization/signin";
 
-const OrganizationsSigninPage: NextPage<OrganizationSigninPageProps> = ({
+const OrganizationSigninPage: NextPage<OrganizationSigninPageProps> = ({
   qr,
   sessionId,
 }) => {
   return <OrganizationSignin qr={qr} sessionId={sessionId} />;
 };
 
-export default OrganizationsSigninPage;
+export default OrganizationSigninPage;
 
 export const getServerSideProps: GetServerSideProps<
   OrganizationSigninPageProps
