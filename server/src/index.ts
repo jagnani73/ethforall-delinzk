@@ -9,6 +9,7 @@ import SocketService from "./services/socket.service";
 import SupabaseService from "./services/supabase.service";
 import adminRoutes from "./admin/admin.routes";
 import EmailService from "./services/email.service";
+import TokenService from "./services/token.service";
 
 dotenvConfig();
 const app: Express = express();
@@ -47,7 +48,8 @@ Promise.all([
   CacheService.initCache(),
   TunnelService.initTunnel(),
   SupabaseService.initSupabase(),
-  EmailService.initEmailClient()
+  EmailService.initEmailClient(),
+  TokenService.initTokenService()
 ])
   .then((_) => {
     const server = app.listen(process.env.PORT!, async () => {

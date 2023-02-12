@@ -9,6 +9,7 @@ import SocketService from "../services/socket.service";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
 import { getAdminAuthToken } from "../admin/admin.service";
+import TokenService from "../services/token.service";
 
 type Attributes = Array<{
   attributeKey: string;
@@ -88,11 +89,20 @@ export const authVerify = async (
       jwz,
       JSON.parse(authRequest)
     );
-    socket.to(sessionId).emit("auth", authResponse.from);
     if (persist) {
       await cache?.set(`delinzk:auth-session:${sessionId}`, authResponse.from, {
         EX: 86400,
       });
+      const token = await TokenService.createJWE(
+        await TokenService.createJWS(
+          { sessionId: sessionId, did: authResponse.from },
+          "24h"
+        )
+      );
+      console.log("JWE generated:", token);
+      socket.to(sessionId).emit("auth", token);
+    } else {
+      socket.to(sessionId).emit("auth", authResponse.from);
     }
     await cache?.DEL(`delinzk:auth-request:${sessionId}`);
     return authResponse;
