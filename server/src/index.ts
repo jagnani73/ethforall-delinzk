@@ -9,6 +9,8 @@ import SocketService from "./services/socket.service";
 import SupabaseService from "./services/supabase.service";
 import adminRoutes from "./admin/admin.routes";
 import EmailService from "./services/email.service";
+import TokenService from "./services/token.service";
+import userRoutes from "./user/user.routes"
 
 dotenvConfig();
 const app: Express = express();
@@ -17,6 +19,7 @@ app.use(cors());
 
 app.use("/api/v1/org", orgRoutes);
 app.use("/api/v1/admin", express.json(), adminRoutes);
+app.use("/api/v1/user", userRoutes)
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
   res.status(405).json({
@@ -47,7 +50,8 @@ Promise.all([
   CacheService.initCache(),
   TunnelService.initTunnel(),
   SupabaseService.initSupabase(),
-  EmailService.initEmailClient()
+  EmailService.initEmailClient(),
+  TokenService.initTokenService()
 ])
   .then((_) => {
     const server = app.listen(process.env.PORT!, async () => {

@@ -14,18 +14,25 @@ import {
   storeOrgDid,
   clearSignupCache,
   generateOrgClaim,
+  Attributes,
+  generateClaimOffer,
+  storeClaimOffer,
+  sendClaimOfferEmail,
 } from "./org.service";
 import { uploadLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
 import {
   orgApproveRequest,
   orgApproveRequestSchema,
+  orgCreatePoeRequest,
+  orgCreatePoeRequestSchema,
   orgSignUpCompleteRequest,
   orgSignUpCompleteRequestSchema,
   orgSignUpRequest,
   orgSignUpRequestSchema,
 } from "./org.schema";
 import verifyAdmin from "../middleware/verify-admin.middleware";
+import verifyOrg from "../middleware/verify-org.middleware";
 
 const router = Router();
 
@@ -168,6 +175,38 @@ const handleOrgSignUpCompleteCallback = async (
   }
 };
 
+const handleOrgCreatePoe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { employee_email: email, employee_tenure: tenure } = req.body as orgCreatePoeRequest;
+    const { id, did } = res.locals.org;
+    const attributes: Attributes = [
+      {
+        attributeKey: "deLinZK Organization ID",
+        attributeValue: id,
+      },
+      {
+        attributeKey: "Tenure",
+        attributeValue: +tenure,
+      },
+    ];
+    const claimOfferId = await generateClaimOffer(
+      process.env.POLYGONID_CLAIMSCHEMAID_PROOF_OF_EMPLOYMENT!,
+      attributes
+    );
+    const reqId = await storeClaimOffer(claimOfferId);
+    await sendClaimOfferEmail(email, reqId);
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get("/sign-in", injectSessionId, handleOrgSignIn);
 router.post("/sign-in-callback", handleOrgSignInCallback);
 router.post(
@@ -191,5 +230,12 @@ router.get(
 );
 
 router.post("/sign-up-complete-callback", handleOrgSignUpCompleteCallback);
+router.post(
+  "/create-poe",
+  express.json(),
+  verifyOrg,
+  validateQuery("body", orgCreatePoeRequestSchema),
+  handleOrgCreatePoe
+);
 
 export default router;

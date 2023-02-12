@@ -9,8 +9,9 @@ import SocketService from "../services/socket.service";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
 import { getAdminAuthToken } from "../admin/admin.service";
+import TokenService from "../services/token.service";
 
-type Attributes = Array<{
+export type Attributes = Array<{
   attributeKey: string;
   attributeValue: number;
 }>;
@@ -72,7 +73,7 @@ export const authVerify = async (
   );
   const sLoader = new loaders.UniversalSchemaLoader("ipfs.io");
   const ethStateResolver = new resolver.EthStateResolver(
-    "https://polygon-mumbai.g.alchemy.com/v2/zg9jQMJMTI9V76nng3UfpvP0EkYQhSiK",
+    `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_APIKEY}`,
     "0x46Fd04eEa588a3EA7e9F055dd691C688c4148ab3"
   );
   const verifier = new auth.Verifier(
@@ -88,11 +89,20 @@ export const authVerify = async (
       jwz,
       JSON.parse(authRequest)
     );
-    socket.to(sessionId).emit("auth", authResponse.from);
     if (persist) {
       await cache?.set(`delinzk:auth-session:${sessionId}`, authResponse.from, {
         EX: 86400,
       });
+      const token = await TokenService.createJWE(
+        await TokenService.createJWS(
+          { sessionId: sessionId, did: authResponse.from },
+          "24h"
+        )
+      );
+      console.log("JWE generated:", token);
+      socket.to(sessionId).emit("auth", token);
+    } else {
+      socket.to(sessionId).emit("auth", authResponse.from);
     }
     await cache?.DEL(`delinzk:auth-request:${sessionId}`);
     return authResponse;
@@ -300,16 +310,12 @@ export const clearSignupCache = async (orgId: number, sessionId: string) => {
   await cache?.DEL(`delinzk:verification-pending:${orgId}`);
 };
 
-const generateClaim = async (
+export const generateClaimOffer = async (
   schemaId: string,
   attributes: Attributes
-): Promise<{
-  qrCode: Record<string, any>;
-  claimOfferId: string;
-  claimOfferSessionId: string;
-}> => {
+) => {
   const authToken = await getAdminAuthToken();
-  const { data: data1 } = await axios.post(
+  const { data } = await axios.post(
     `https://api-staging.polygonid.com/v1/issuers/${process.env.POLYGONID_ISSUERID}/schemas/${schemaId}/offers`,
     {
       attributes: attributes,
@@ -320,18 +326,25 @@ const generateClaim = async (
       },
     }
   );
-  const claimOfferId = data1.id;
+  return data.id;
+};
+
+export const generateClaimAuth = async (
+  claimOfferId: string
+): Promise<{
+  qrCode: Record<string, any>;
+  claimOfferSessionId: string;
+}> => {
   console.log("Claim offer ID:", claimOfferId);
-  const { data: data2 } = await axios.post(
+  const { data } = await axios.post(
     `https://api-staging.polygonid.com/v1/offers-qrcode/${claimOfferId}`
   );
-  const qrCode = data2.qrcode;
-  const claimOfferSessionId = data2.sessionID;
+  const qrCode = data.qrcode;
+  const claimOfferSessionId = data.sessionID;
   console.log("Claim offer auth generated:");
   console.dir(qrCode, { depth: null });
   return {
     qrCode: qrCode,
-    claimOfferId: claimOfferId,
     claimOfferSessionId: claimOfferSessionId,
   };
 };
@@ -343,13 +356,12 @@ export const generateOrgClaim = async (sessionId: string) => {
       attributeValue: 1,
     },
   ];
-  const {
-    qrCode: claimQr,
-    claimOfferId,
-    claimOfferSessionId,
-  } = await generateClaim(
+  const claimOfferId = await generateClaimOffer(
     process.env.POLYGONID_CLAIMSCHEMAID_VERIFIED_ORG!,
     claimParams
+  );
+  const { qrCode: claimQr, claimOfferSessionId } = await generateClaimAuth(
+    claimOfferId
   );
   const socket = await SocketService.getSocket();
   socket.to(sessionId).emit("org-auth", JSON.stringify(claimQr));
@@ -360,7 +372,7 @@ export const generateOrgClaim = async (sessionId: string) => {
   );
 };
 
-const checkClaimStatus = async (offerId: string, sessionId: string) => {
+export const checkClaimStatus = async (offerId: string, sessionId: string) => {
   while (true) {
     try {
       const { data } = await axios.get(
@@ -384,4 +396,27 @@ const checkClaimStatus = async (offerId: string, sessionId: string) => {
       break;
     }
   }
+};
+
+export const storeClaimOffer = async (claimOfferId: string) => {
+  const reqId = v4();
+  const cache = await CacheService.getCache();
+  await cache?.set(`delinzk:claim-pending:${reqId}`, claimOfferId, {
+    EX: 604800,
+  });
+  return reqId;
+};
+
+export const sendClaimOfferEmail = async (email: string, reqId: string) => {
+  const rawEmail = await EmailService.generateEmail(
+    "org-claim-offer",
+    email,
+    "Hello there, hustler 🧑‍💻! You have received a new Proof-of-Employment on deLinZK",
+    {
+      url: `${process.env.SUBDOMAIN_FE}/employee/claim?reqId=${reqId}`,
+    },
+    []
+  );
+
+  await EmailService.sendEmail(email, rawEmail);
 };
