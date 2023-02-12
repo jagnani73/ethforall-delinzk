@@ -3,14 +3,11 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 
-import type { OrganizationSigninProps } from "@/utils/types/organization.types";
+import type { EmployeeSignupProps } from "@/utils/types/employee.types";
 import { useAuth } from "@/utils/store/auth";
 import { QRPage } from "@/components/shared";
 
-const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
-  qr,
-  sessionId,
-}) => {
+const EmployeeSignin: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   const socket = useRef<Socket>();
 
   const { push } = useRouter();
@@ -30,7 +27,7 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
 
     socket.current.on("auth", (jwe) => {
       setJWE(jwe);
-      push("/organization/claims");
+      push("/employee/profile");
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,12 +37,10 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
     <QRPage
       qr={qr}
       heading={
-        <span className="text-center block mb-8">
-          Signin as an Organization!
-        </span>
+        <span className="text-center block mb-8">Signin as an Employee!</span>
       }
     />
   );
 };
 
-export default OrganizationSignin;
+export default EmployeeSignin;

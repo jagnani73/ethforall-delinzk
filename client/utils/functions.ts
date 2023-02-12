@@ -17,3 +17,10 @@ export function CreateYupSchema(schema: any, config: CustomFieldTypes) {
     return schema;
   }
 }
+
+export const DatesToTenure = (start: string, end: string | null): number => {
+  const _start = +start.split("-").join("");
+  if (!end) return _start;
+  const _end = +end.split("-").join("");
+  return +`${_start}${_end}`;
+};

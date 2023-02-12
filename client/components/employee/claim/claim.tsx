@@ -4,17 +4,15 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { io } from "socket.io-client";
 
-import type { OrganizationOnboardingProps } from "@/utils/types/organization.types";
+import type { EmployeeClaimProps } from "@/utils/types/employee.types";
 import type { QRPageProps } from "@/utils/types/shared.types";
 import { Button, QRPage } from "@/components/shared";
 
-const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
-  linkQR,
-}) => {
+const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
   const socket = useRef<Socket>();
 
   const [qr, setQr] = useState<string>(linkQR);
-  const [phase, setPhase] = useState<0 | 1 | 2>(0);
+  const [phase, setPhase] = useState<0 | 1>(0);
 
   const {
     query: { reqId },
@@ -23,7 +21,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
 
   useEffect(() => {
     if (reqId) {
-      replace("/organization/onboarding", undefined, { shallow: true });
+      replace("/employee/claim", undefined, { shallow: true });
 
       socket.current = io(`ws://delinzk.loca.lt`, {
         reconnectionDelayMax: 10000,
@@ -35,14 +33,9 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
         },
       });
 
-      socket.current.on("org-auth", (data) => {
+      socket.current.on("user-claim", (data) => {
         setQr(data);
         setPhase(1);
-      });
-
-      socket.current.on("org-claim", (data) => {
-        setQr(data);
-        setPhase(2);
       });
     }
 
@@ -54,7 +47,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
       {
         heading: (
           <>
-            <span className="text-slate-blue">1/3</span> Connect your Wallet
+            <span className="text-slate-blue">1/2</span> Authorize your Wallet
             Address to deLinZK!
           </>
         ),
@@ -64,38 +57,18 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
             <span className="font-semibold text-slate-blue">
               Polygon ID application
             </span>{" "}
-            only to connect your wallet address to deLinZK.
+            only, to connect your wallet address to deLinZK.
           </>
         ),
       },
       {
         heading: (
           <>
-            <span className="text-slate-blue">2/3</span> Authenticate your
-            wallet address with deLinZK!
+            <span className="text-slate-blue">2/2</span> Claim your Proof of
+            Employment!
           </>
         ),
-        description: (
-          <>
-            Once connected, we need to Authenticate your wallet address to
-            generate a verified claim.
-          </>
-        ),
-      },
-      {
-        heading: (
-          <>
-            <span className="text-slate-blue">3/3</span> Claim your offer for a
-            verified organization!
-          </>
-        ),
-        description: (
-          <>
-            One last step before you are finally onboarded! This is the claim
-            that you will own. It states that your organization is verified on
-            deLinZK.
-          </>
-        ),
+        description: <>This will store the your claim.</>,
         footer: (
           <>
             <p className="text-onyx text-opacity-75 text-center mt-8 text-sm">
@@ -112,7 +85,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
                 </Button>
               </Link>
 
-              <Link href="/organization/signin">
+              <Link href="/employee/signin">
                 <Button
                   primary={true}
                   className="border-2 border-slate-blue px-12"
@@ -131,4 +104,4 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
   return <QRPage qr={qr} {...QRState[phase]} />;
 };
 
-export default OrganizationOnboarding;
+export default EmployeeClaim;

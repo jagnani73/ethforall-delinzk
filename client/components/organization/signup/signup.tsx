@@ -7,7 +7,7 @@ import { CreateYupSchema } from "@/utils/functions";
 import { OrgSignup } from "@/utils/services/api";
 import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 
-const OrganizationsSignup: React.FC = () => {
+const OrganizationSignup: React.FC = () => {
   const [received, setReceived] = useState<boolean>(false);
 
   const CLASSNAMES = useMemo<FieldClassnames>(
@@ -204,4 +204,4 @@ const OrganizationsSignup: React.FC = () => {
   );
 };
 
-export default OrganizationsSignup;
+export default OrganizationSignup;

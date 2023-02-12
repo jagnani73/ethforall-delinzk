@@ -9,15 +9,15 @@ const QRPage: React.FC<QRPageProps> = ({
   footer,
 }) => {
   return (
-    <div className="flex my-auto w-fit border-l-8 border-b-8 mx-auto border-slate-blue">
+    <div className="flex my-auto w-fit effect-shadow mx-auto">
       <main className="w-full max-w-3xl mx-auto py-6 px-12 bg-white">
         {heading && <h2 className="text-2xl font-semibold">{heading}</h2>}
 
         {description && (
-          <p className="text-opacity-75 text-onyx my-4">{description}</p>
+          <p className="text-opacity-75 text-onyx mt-4">{description}</p>
         )}
 
-        <div className="bg-pale-purple w-fit p-4 mx-auto rounded">
+        <div className="bg-pale-purple w-fit p-1 mx-auto rounded mt-4">
           <QRCode
             value={qr}
             bgColor="#F8ECFF"

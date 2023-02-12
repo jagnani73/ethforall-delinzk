@@ -1,25 +1,17 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { useEffect } from "react";
 
 import type { OrganizationSigninPageProps } from "@/utils/types/organization.types";
 import { OrgSignin } from "@/utils/services/api";
 import { OrganizationSignin } from "@/components/organization/signin";
-import { useAuth } from "@/utils/store/auth";
 
-const OrganizationsSigninPage: NextPage<OrganizationSigninPageProps> = ({
+const OrganizationSigninPage: NextPage<OrganizationSigninPageProps> = ({
   qr,
   sessionId,
 }) => {
-  const { setSessionId } = useAuth();
-
-  useEffect(() => {
-    setSessionId(sessionId);
-  }, [sessionId, setSessionId]);
-
-  return <OrganizationSignin qr={qr} />;
+  return <OrganizationSignin qr={qr} sessionId={sessionId} />;
 };
 
-export default OrganizationsSigninPage;
+export default OrganizationSigninPage;
 
 export const getServerSideProps: GetServerSideProps<
   OrganizationSigninPageProps
