@@ -47,14 +47,14 @@ export const listenForClaimAuthComplete = async (
   );
 };
 
-export const generateAuthQr = async (sessionId: string) => {
+export const generateAuthQr = async (sessionId: string, action: "sign-up" | "sign-in") => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
     process.env.ISSUERID!,
-    `${hostUrl}/api/v1/user/sign-up-callback?sessionId=${sessionId}`
+    `${hostUrl}/api/v1/user/${action}-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
   request.id = requestId;
