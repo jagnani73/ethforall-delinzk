@@ -1,5 +1,6 @@
 import type { Socket } from "socket.io-client";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 
 import type { OrganizationSigninProps } from "@/utils/types/organization.types";
@@ -9,7 +10,9 @@ import { QRPage } from "@/components/shared";
 const OrganizationSignin: React.FC<OrganizationSigninProps> = ({ qr }) => {
   const socket = useRef<Socket>();
 
-  const { sessionId, setIdentifier } = useAuth();
+  const { push } = useRouter();
+
+  const { sessionId, setJWE } = useAuth();
 
   useEffect(() => {
     if (qr && sessionId) {
@@ -23,9 +26,9 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({ qr }) => {
         },
       });
 
-      socket.current.on("auth", (_identifier) => {
-        alert("proof generated and verified");
-        setIdentifier(_identifier);
+      socket.current.on("auth", (jwe) => {
+        setJWE(jwe);
+        push("/organization/claims");
       });
     }
 

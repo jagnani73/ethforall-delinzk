@@ -1,3 +1,5 @@
+import type { CustomFieldTypes } from "./shared.types";
+
 export interface OrganizationOnboardingPageProps {
   linkQR: Object;
 }
@@ -13,4 +15,10 @@ export interface OrganizationSigninPageProps {
 
 export interface OrganizationSigninProps {
   qr: string;
+}
+
+export interface ClaimSchema {
+  name: string;
+  description: string;
+  fields: CustomFieldTypes[];
 }

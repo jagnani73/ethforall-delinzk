@@ -30,7 +30,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       </Head>
 
       {loading && (
-        <div className="w-full h-screen z-100 fixed flex items-center justify-center top-0 left-0 bg-transparent backdrop-blur select-none">
+        <div className="w-full h-screen z-50 fixed flex items-center justify-center top-0 left-0 bg-transparent backdrop-blur">
           <Image
             height={200}
             width={200}

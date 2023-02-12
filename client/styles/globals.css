@@ -8,7 +8,7 @@ body,
   @apply w-full h-full p-0 m-0 text-onyx bg-pale-purple font-modern-era;
 }
 
-@layer {
+@layer base {
   @font-face {
     font-family: "ModernEra";
     font-weight: 300;
@@ -34,8 +34,8 @@ body,
     font-weight: 800;
     src: url("/fonts/ModernEra-ExtraBold.otf");
   }
-}
 
-.effect-shadow {
-  @apply transition-all duration-300 shadow-[1px_-1px,2px_-2px,3px_-3px,4px_-4px,5px_-5px,6px_-6px,7px_-7px,8px_-8px,9px_-9px,10px_-10px] shadow-slate-blue hover:shadow-none;
+  .effect-shadow {
+    @apply transition-all duration-300 shadow-[1px_-1px,2px_-2px,3px_-3px,4px_-4px,5px_-5px,6px_-6px,7px_-7px,8px_-8px,9px_-9px,10px_-10px] shadow-slate-blue hover:shadow-none;
+  }
 }
