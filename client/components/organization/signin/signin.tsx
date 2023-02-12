@@ -40,9 +40,10 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
     <QRPage
       qr={qr}
       heading={
-        <span className="text-center block mb-8">
-          Signin as an Organization!
-        </span>
+        <span className="text-center block">Signin as an Organization!</span>
+      }
+      description={
+        <>Make sure you are verified as an Organization before signing in.</>
       }
     />
   );

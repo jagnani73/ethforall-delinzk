@@ -16,7 +16,7 @@ import { EmpSignupForm } from "@/utils/services/api";
 
 const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   const [DID, setDID] = useState<string | null>(null);
-  const [completed, setCompleted] = useState<boolean>(true);
+  const [completed, setCompleted] = useState<boolean>(false);
 
   const socket = useRef<Socket>();
 
@@ -33,8 +33,8 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   const FIELDS = useMemo<CustomFieldTypes[]>(
     () => [
       {
-        id: "emp_name",
-        name: "emp_name",
+        id: "employee_name",
+        name: "employee_name",
         type: "text",
         placeholder: "Enter the name",
         validationtype: "string",
@@ -47,8 +47,8 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         classnames: CLASSNAMES,
       },
       {
-        id: "emp_username",
-        name: "emp_username",
+        id: "employee_username",
+        name: "employee_username",
         type: "text",
         placeholder: "Whats your username?",
         validationtype: "string",
@@ -61,8 +61,8 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         classnames: CLASSNAMES,
       },
       {
-        id: "emp_industry",
-        name: "emp_industry",
+        id: "employee_industry",
+        name: "employee_industry",
         type: "text",
         placeholder: "Enter the type of Industry",
         validationtype: "string",
@@ -75,8 +75,8 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         classnames: CLASSNAMES,
       },
       {
-        id: "emp_about",
-        name: "emp_about",
+        id: "employee_about",
+        name: "employee_about",
         type: "textarea",
         placeholder: "Something about yourself...",
         validationtype: "string",
@@ -89,8 +89,8 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         classnames: CLASSNAMES,
       },
       {
-        id: "emp_email",
-        name: "emp_email",
+        id: "employee_email",
+        name: "employee_email",
         type: "email",
         placeholder: "Enter the email address",
         validationtype: "string",
@@ -117,7 +117,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
       },
     });
 
-    socket.current.on("employee-auth", (did) => {
+    socket.current.on("auth", (did) => {
       setDID(did);
     });
 
@@ -146,7 +146,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   return (
     <>
       {!completed ? (
-        DID ? (
+        !DID ? (
           <QRPage
             qr={qr}
             heading={
@@ -203,30 +203,30 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
                     ))}
 
                     <label
-                      htmlFor="emp_photo"
+                      htmlFor="employee_photo"
                       className={`${CLASSNAMES.input} cursor-pointer`}
                     >
                       <span
                         className={
                           // @ts-ignore
-                          values["emp_photo"]?.name
+                          values["employee_photo"]?.name
                             ? ""
                             : "text-onyx text-opacity-50"
                         }
                       >
                         {/* @ts-ignore */}
-                        {values["emp_photo"]?.name ?? "Upload a photo"}
+                        {values["employee_photo"]?.name ?? "Upload a photo"}
                       </span>
 
                       <input
-                        id="emp_photo"
-                        name="emp_photo"
+                        id="employee_photo"
+                        name="employee_photo"
                         className="hidden"
                         type="file"
                         accept="image/*"
                         required
                         onChange={(e) =>
-                          setFieldValue("emp_photo", e.target.files![0])
+                          setFieldValue("employee_photo", e.target.files![0])
                         }
                       />
                     </label>
