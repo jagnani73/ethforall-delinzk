@@ -150,3 +150,11 @@ export const EmpProfileUpdate = async (
 
   return;
 };
+
+export const PublicProfile = async (
+  username: string
+): Promise<EmployeeType> => {
+  const { data } = await apiInstance.get(`/user/profile/${username}`);
+
+  return data;
+};
