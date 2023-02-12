@@ -7,33 +7,34 @@ import type { OrganizationSigninProps } from "@/utils/types/organization.types";
 import { useAuth } from "@/utils/store/auth";
 import { QRPage } from "@/components/shared";
 
-const OrganizationSignin: React.FC<OrganizationSigninProps> = ({ qr }) => {
+const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
+  qr,
+  sessionId,
+}) => {
   const socket = useRef<Socket>();
 
   const { push } = useRouter();
 
-  const { sessionId, setJWE } = useAuth();
+  const { setJWE } = useAuth();
 
   useEffect(() => {
-    if (qr && sessionId) {
-      socket.current = io(`ws://delinzk.loca.lt`, {
-        reconnectionDelayMax: 10000,
-        extraHeaders: {
-          "Bypass-Tunnel-Reminder": "true",
-        },
-        query: {
-          "x-session-id": sessionId,
-        },
-      });
+    socket.current = io(`ws://delinzk.loca.lt`, {
+      reconnectionDelayMax: 10000,
+      extraHeaders: {
+        "Bypass-Tunnel-Reminder": "true",
+      },
+      query: {
+        "x-session-id": sessionId,
+      },
+    });
 
-      socket.current.on("auth", (jwe) => {
-        setJWE(jwe);
-        push("/organization/claims");
-      });
-    }
+    socket.current.on("auth", (jwe) => {
+      setJWE(jwe);
+      push("/organization/claims");
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [qr, sessionId]);
+  }, []);
 
   return (
     <QRPage

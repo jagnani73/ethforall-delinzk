@@ -15,6 +15,7 @@ export interface OrganizationSigninPageProps {
 
 export interface OrganizationSigninProps {
   qr: string;
+  sessionId: string;
 }
 
 export interface ClaimSchema {
