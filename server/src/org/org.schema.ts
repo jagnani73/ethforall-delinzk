@@ -29,12 +29,12 @@ export type orgSignUpCompleteRequest = yup.InferType<
 >;
 
 export const orgCreatePoeRequestSchema = yup.object({
-  email: yup
+  employee_email: yup
     .string()
     .trim()
     .email("email must be a valid e-mail ID")
     .required("email is required"),
-  tenure: yup.number().required("tenure is required"),
+  employee_tenure: yup.number().required("tenure is required"),
 });
 
 export type orgCreatePoeRequest = yup.InferType<

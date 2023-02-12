@@ -329,26 +329,22 @@ export const generateClaimOffer = async (
   return data.id;
 };
 
-const generateClaim = async (
-  schemaId: string,
-  attributes: Attributes
+export const generateClaimAuth = async (
+  claimOfferId: string
 ): Promise<{
   qrCode: Record<string, any>;
-  claimOfferId: string;
   claimOfferSessionId: string;
 }> => {
-  const claimOfferId = await generateClaimOffer(schemaId, attributes);
   console.log("Claim offer ID:", claimOfferId);
-  const { data: data1 } = await axios.post(
+  const { data } = await axios.post(
     `https://api-staging.polygonid.com/v1/offers-qrcode/${claimOfferId}`
   );
-  const qrCode = data1.qrcode;
-  const claimOfferSessionId = data1.sessionID;
+  const qrCode = data.qrcode;
+  const claimOfferSessionId = data.sessionID;
   console.log("Claim offer auth generated:");
   console.dir(qrCode, { depth: null });
   return {
     qrCode: qrCode,
-    claimOfferId: claimOfferId,
     claimOfferSessionId: claimOfferSessionId,
   };
 };
@@ -360,13 +356,12 @@ export const generateOrgClaim = async (sessionId: string) => {
       attributeValue: 1,
     },
   ];
-  const {
-    qrCode: claimQr,
-    claimOfferId,
-    claimOfferSessionId,
-  } = await generateClaim(
+  const claimOfferId = await generateClaimOffer(
     process.env.POLYGONID_CLAIMSCHEMAID_VERIFIED_ORG!,
     claimParams
+  );
+  const { qrCode: claimQr, claimOfferSessionId } = await generateClaimAuth(
+    claimOfferId
   );
   const socket = await SocketService.getSocket();
   socket.to(sessionId).emit("org-auth", JSON.stringify(claimQr));
@@ -377,7 +372,7 @@ export const generateOrgClaim = async (sessionId: string) => {
   );
 };
 
-const checkClaimStatus = async (offerId: string, sessionId: string) => {
+export const checkClaimStatus = async (offerId: string, sessionId: string) => {
   while (true) {
     try {
       const { data } = await axios.get(

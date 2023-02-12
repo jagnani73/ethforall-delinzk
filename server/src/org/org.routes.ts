@@ -181,7 +181,7 @@ const handleOrgCreatePoe = async (
   next: NextFunction
 ) => {
   try {
-    const { email, tenure } = req.body as orgCreatePoeRequest;
+    const { employee_email: email, employee_tenure: tenure } = req.body as orgCreatePoeRequest;
     const { id, did } = res.locals.org;
     const attributes: Attributes = [
       {
