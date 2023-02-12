@@ -1,3 +1,11 @@
+export interface EmployeeClaimPageProps {
+  linkQR: string;
+}
+
+export interface EmployeeClaimProps {
+  linkQR: string;
+}
+
 export interface EmployeeSignupPageProps {
   qr: string;
   sessionId: string;

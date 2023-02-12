@@ -101,3 +101,11 @@ export const EmpSignin = async (): Promise<{
     sessionId: headers["x-delinzk-session-id"] ?? null,
   };
 };
+
+export const EmpClaim = async (reqId: string): Promise<string> => {
+  const { data } = await apiInstance.get("/user/claim-poe", {
+    params: { reqId },
+  });
+
+  return JSON.stringify(data);
+};
