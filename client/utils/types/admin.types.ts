@@ -8,3 +8,9 @@ export interface AdminOrg {
   license: string;
   email: string;
 }
+
+export interface OrgDetailsProps {
+  icon: React.ReactNode;
+  heading: React.ReactNode;
+  content: React.ReactNode;
+}

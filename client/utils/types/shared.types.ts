@@ -86,4 +86,5 @@ export interface QRPageProps {
 
 export interface MessageProps {
   children: React.ReactNode;
+  className?: string;
 }
