@@ -2,14 +2,26 @@ import { useCallback, useMemo } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
+import type { FieldClassnames } from "@/utils/types/shared.types";
 import type { ClaimSchema } from "@/utils/types/organization.types";
-import { Button, CustomField } from "@/components/shared";
+import { Button, CustomField, Message } from "@/components/shared";
 import { CreateYupSchema, DatesToTenure } from "@/utils/functions";
 import { OrgCreateClaim } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
 
 const OrganizationClaims: React.FC = () => {
   const { JWE } = useAuth();
+
+  const CLASSNAMES = useMemo<FieldClassnames>(
+    () => ({
+      wrapper: "w-full first:mb-10",
+      input:
+        "rounded p-4 w-full bg-onyx bg-opacity-5 border-2 border-slate-blue border-opacity-50 focus:border-opacity-100 transition-all outline-none",
+      description: "text-red-400 text-sm font-medium mt-0.5 pl-1",
+      label: "text-left mr-auto block",
+    }),
+    []
+  );
 
   const CLAIMS = useMemo<ClaimSchema[]>(
     () => [
@@ -21,9 +33,9 @@ const OrganizationClaims: React.FC = () => {
             name: "employee_email",
             id: "employee_email",
             type: "text",
-            label: "Email",
+            label: "Employee email to send claim offer to",
             placeholder: "gita@hashlabs.dev",
-            description: "Employee email to send claim offer to",
+            classnames: CLASSNAMES,
           },
           {
             name: "employee_start_date",
@@ -31,6 +43,7 @@ const OrganizationClaims: React.FC = () => {
             type: "date",
             label: "Start Date",
             description: "Start date",
+            classnames: CLASSNAMES,
           },
           {
             name: "employee_end_date",
@@ -38,11 +51,12 @@ const OrganizationClaims: React.FC = () => {
             type: "date",
             label: "End Date",
             description: "End date",
+            classnames: CLASSNAMES,
           },
         ],
       },
     ],
-    []
+    [CLASSNAMES]
   );
 
   const submitHandler = useCallback(
@@ -60,14 +74,14 @@ const OrganizationClaims: React.FC = () => {
   );
 
   return (
-    <main>
+    <Message>
       {CLAIMS.map(({ fields, name, description }) => (
         <article key={name}>
           <Formik
             enableReinitialize
             onSubmit={submitHandler}
             initialValues={{
-              employee_email: "gita@hashlabs.dev",
+              employee_email: "",
               employee_start_date: "",
               employee_end_date: "",
             }}
@@ -76,13 +90,14 @@ const OrganizationClaims: React.FC = () => {
             )}
           >
             {({ errors, touched }) => (
-              <Form className="w-96">
-                <h4>{name}</h4>
+              <Form className="w-96 text-center">
+                <h2 className="text-4xl font-bold">{name}</h2>
 
-                <p>{description}</p>
+                <p className="text-onyx text-opacity-75 font-medium my-4">
+                  {description}
+                </p>
 
-                <p>Required Attributes</p>
-                <div className="flex flex-col gap-y-2 w-full">
+                <div className="flex flex-col gap-y-2 w-full mt-2">
                   {fields.map((field) => (
                     <CustomField
                       key={field.name}
@@ -98,7 +113,7 @@ const OrganizationClaims: React.FC = () => {
                   ))}
                 </div>
 
-                <Button primary type="submit">
+                <Button primary type="submit" className="mt-8 px-10">
                   Offer Claim
                 </Button>
               </Form>
@@ -106,7 +121,7 @@ const OrganizationClaims: React.FC = () => {
           </Formik>
         </article>
       ))}
-    </main>
+    </Message>
   );
 };
 
