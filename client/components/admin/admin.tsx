@@ -9,7 +9,7 @@ import type {
 import type { AdminOrg } from "@/utils/types/admin.types";
 import { CreateYupSchema } from "@/utils/functions";
 import { AdminLogin, AdminOrgs, OrgApprove } from "@/utils/services/api";
-import { Button, CustomField, Message } from "@/components/shared";
+import { Button, CustomField, Message, OrgDetails } from "@/components/shared";
 import {
   EmailIcon,
   IndustryIcon,
@@ -17,7 +17,6 @@ import {
   TaglineIcon,
   TeamIcon,
 } from "@/public/icons";
-import { OrgDetails } from ".";
 
 const Admin: React.FC = () => {
   const [authenticated, setAuthenticated] = useState<string | null>(null);

@@ -4,3 +4,5 @@ export { default as Topbar } from "./topbar";
 export { default as Button } from "./button";
 export { default as Message } from "./message";
 export { default as QRPage } from "./qr-page";
+export { default as Profile } from "./profile";
+export { default as OrgDetails } from "./org-details";
