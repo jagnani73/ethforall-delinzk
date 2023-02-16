@@ -6,12 +6,13 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
   validations: _validations,
   validationtype: _validationtype,
   classnames = {
-    description: "",
     input: "",
     label: "",
     option: "",
     wrapper: "",
   },
+  description = null,
+  label = null,
   ...props
 }) => {
   switch (props.type) {
@@ -24,9 +25,9 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
     case "textarea": {
       return (
         <div className={classnames?.wrapper ?? ""}>
-          {props.label && (
+          {label && (
             <label htmlFor={props.id} className={classnames?.label ?? ""}>
-              {props.label}
+              {label}
             </label>
           )}
           {props.type === "textarea" ? (
@@ -39,9 +40,7 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
             <Field {...props} className={`${classnames?.input ?? ""}`} />
           )}
 
-          {props.description && (
-            <p className={classnames?.description ?? ""}>{props.description}</p>
-          )}
+          {description}
         </div>
       );
     }
@@ -49,9 +48,9 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
     case "select": {
       return (
         <div className={classnames?.wrapper}>
-          {props.label && (
+          {label && (
             <label htmlFor={props.id} className={classnames?.label ?? ""}>
-              {props.label}
+              {label}
             </label>
           )}
           <Field {...props} as="select" className={classnames?.input ?? ""}>
@@ -75,9 +74,7 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
             ))}
           </Field>
 
-          {props.description && (
-            <p className={classnames?.description ?? ""}>{props.description}</p>
-          )}
+          {description}
         </div>
       );
     }
@@ -103,9 +100,7 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
             </label>
           ))}
 
-          {props.description && (
-            <p className={classnames?.description ?? ""}>{props.description}</p>
-          )}
+          {description}
         </div>
       );
     }

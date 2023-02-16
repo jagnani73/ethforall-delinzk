@@ -147,14 +147,14 @@ export const EmpProfile = async (token: string): Promise<EmployeeType> => {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  return data;
+  return data.profile;
 };
 
 export const EmpProfileUpdate = async (
   token: string,
-  data: FormData
+  data: Record<string, string>
 ): Promise<void> => {
-  await apiInstance.put("/employee/sign-up", data, {
+  await apiInstance.post("/user/profile/update", data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -166,5 +166,5 @@ export const PublicProfile = async (
 ): Promise<EmployeeType> => {
   const { data } = await apiInstance.get(`/user/profile/${username}`);
 
-  return data;
+  return data.profile;
 };

@@ -3,7 +3,6 @@ import type { EmployeeType } from "./employee.types";
 export interface FieldClassnames {
   wrapper?: string;
   input?: string;
-  description?: string;
   label?: string;
   option?: string;
 }

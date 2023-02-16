@@ -6,12 +6,15 @@ import TunnelService from "../services/tunnel.service";
 import { auth } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
 
-export interface UserData {
+export interface UpdateUserData {
   about: string;
-  email: string;
   name: string;
-  username: string;
   industry: string;
+}
+
+export interface UserData extends UpdateUserData {
+  email: string;
+  username: string;
   photo: string;
 }
 
@@ -47,7 +50,10 @@ export const listenForClaimAuthComplete = async (
   );
 };
 
-export const generateAuthQr = async (sessionId: string, action: "sign-up" | "sign-in") => {
+export const generateAuthQr = async (
+  sessionId: string,
+  action: "sign-up" | "sign-in"
+) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
   const request = auth.createAuthorizationRequestWithMessage(
@@ -83,7 +89,7 @@ export const createEmptyUser = async (did: string) => {
       industry: "",
       about: "",
       email: "",
-      photo: ""
+      photo: "",
     })
     .select();
   if (error) {
@@ -122,7 +128,10 @@ export const storeUserPhoto = async (photo: Express.Multer.File) => {
   return data2.publicUrl;
 };
 
-export const storeUserDetails = async (did: string, userData: UserData) => {
+export const updateUserDetails = async (
+  did: string,
+  userData: UserData | UpdateUserData
+) => {
   const db = await SupabaseService.getSupabase();
   const { error } = await db!.from("users").update(userData).eq("did", did);
   if (error) {
@@ -134,4 +143,38 @@ export const storeUserDetails = async (did: string, userData: UserData) => {
     };
     throw err;
   }
+};
+
+export const fetchUserPublicDetails = async (username: string) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("users")
+    .select()
+    .eq("username", username);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+
+  return data[0];
+};
+
+export const fetchUserPrivateDetails = async (did: string) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!.from("users").select().eq("did", did);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data[0];
 };
