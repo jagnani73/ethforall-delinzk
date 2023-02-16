@@ -7,7 +7,7 @@ import type {
   FieldClassnames,
 } from "@/utils/types/shared.types";
 import type { AdminOrg } from "@/utils/types/admin.types";
-import { CreateYupSchema } from "@/utils/functions";
+import { CreateYupSchema, PopPromiseToast } from "@/utils/functions";
 import { AdminLogin, AdminOrgs, OrgApprove } from "@/utils/services/api";
 import { Button, CustomField, Message, OrgDetails } from "@/components/shared";
 import {
@@ -70,7 +70,14 @@ const Admin: React.FC = () => {
     if (authenticated) {
       (async () => {
         try {
-          setOrgs(await AdminOrgs(authenticated));
+          const orgsPromise = AdminOrgs(authenticated);
+          PopPromiseToast(
+            orgsPromise,
+            "loading organizations...",
+            "organizations loaded",
+            "please try again"
+          );
+          setOrgs(await orgsPromise);
         } catch (error) {
           console.error(error);
         }
@@ -81,7 +88,14 @@ const Admin: React.FC = () => {
   const submitHandler = useCallback(
     async (values: { admin_email: ""; admin_password: "" }) => {
       try {
-        setAuthenticated(await AdminLogin(values));
+        const submitPromise = AdminLogin(values);
+        PopPromiseToast(
+          submitPromise,
+          "signing in...",
+          "welcome admin",
+          "please try again"
+        );
+        setAuthenticated(await submitPromise);
       } catch (error) {
         console.error(error);
       } finally {
@@ -93,8 +107,6 @@ const Admin: React.FC = () => {
   const approveHandler = useCallback(
     async (id: string) => {
       try {
-        console.log(id);
-
         const did = await OrgApprove(id, authenticated!);
 
         setOrgs((prevState) =>
@@ -155,72 +167,85 @@ const Admin: React.FC = () => {
             )}
           </Formik>
         </Message>
-      ) : !orgs ? (
-        <div>loading</div>
       ) : (
-        <div className="flex flex-col w-full h-full">
-          <h2 className="mt-12 text-4xl font-bold ml-8">
-            Approval Pending Organizations
-          </h2>
-          <div className="flex h-fit gap-x-16 m-auto mt-12 w-full overflow-x-auto p-8">
-            {orgs.map(
-              ({ did, email, id, industry, license, name, size, tagline }) => (
-                <Message key={did} className="min-w-xl">
-                  <article className="w-full">
-                    <h4 className="font-bold text-3xl">{name}</h4>
+        orgs && (
+          <div className="flex flex-col w-full h-full">
+            <h2 className="mt-12 text-4xl font-bold ml-8">
+              Approval Pending Organizations
+            </h2>
+            <div className="flex h-fit gap-x-16 m-auto mt-12 w-full overflow-x-auto p-8">
+              {orgs.length ? (
+                orgs.map(
+                  ({
+                    did,
+                    email,
+                    id,
+                    industry,
+                    license,
+                    name,
+                    size,
+                    tagline,
+                  }) => (
+                    <Message key={did} className="min-w-xl">
+                      <article className="w-full">
+                        <h4 className="font-bold text-3xl">{name}</h4>
 
-                    <div className="flex flex-col w-full gap-y-6 mt-8">
-                      <OrgDetails
-                        content={industry}
-                        heading="Industry"
-                        icon={<IndustryIcon />}
-                      />
-                      <OrgDetails
-                        content={size}
-                        heading="Team Size"
-                        icon={<TeamIcon />}
-                      />
-                      <OrgDetails
-                        content={tagline}
-                        heading="Tagline"
-                        icon={<TaglineIcon />}
-                      />
-                      <OrgDetails
-                        content={email}
-                        heading="Email"
-                        icon={<EmailIcon />}
-                      />
+                        <div className="flex flex-col w-full gap-y-6 mt-8">
+                          <OrgDetails
+                            content={industry}
+                            heading="Industry"
+                            icon={<IndustryIcon />}
+                          />
+                          <OrgDetails
+                            content={size}
+                            heading="Team Size"
+                            icon={<TeamIcon />}
+                          />
+                          <OrgDetails
+                            content={tagline}
+                            heading="Tagline"
+                            icon={<TaglineIcon />}
+                          />
+                          <OrgDetails
+                            content={email}
+                            heading="Email"
+                            icon={<EmailIcon />}
+                          />
 
-                      <div>
-                        <a
-                          href={license}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex gap-x-2 items-start text-lg text-slate-blue font-medium underline"
-                        >
-                          <span className="w-7 h-7 flex">
-                            <LicenseIcon />
-                          </span>
-                          Open License
-                        </a>
-                      </div>
-                    </div>
+                          <div>
+                            <a
+                              href={license}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex gap-x-2 items-start text-lg text-slate-blue font-medium underline"
+                            >
+                              <span className="w-7 h-7 flex">
+                                <LicenseIcon />
+                              </span>
+                              Open License
+                            </a>
+                          </div>
+                        </div>
 
-                    {!did && (
-                      <Button
-                        primary
-                        onClick={() => approveHandler(id)}
-                        className="px-8 mx-auto flex mt-8"
-                      >
-                        Approve
-                      </Button>
-                    )}
-                  </article>
-                </Message>
-              )
-            )}
+                        {!did && (
+                          <Button
+                            primary
+                            onClick={() => approveHandler(id)}
+                            className="px-8 mx-auto flex mt-8"
+                          >
+                            Approve
+                          </Button>
+                        )}
+                      </article>
+                    </Message>
+                  )
+                )
+              ) : (
+                <>No pending approvals</>
+              )}
+            </div>
           </div>
-        </div>
+        )
       )}
     </>
   );

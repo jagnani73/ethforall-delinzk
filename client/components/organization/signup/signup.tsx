@@ -3,7 +3,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { Button, CustomField, Message } from "@/components/shared";
-import { CreateYupSchema } from "@/utils/functions";
+import { CreateYupSchema, PopPromiseToast } from "@/utils/functions";
 import { OrgSignup } from "@/utils/services/api";
 import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 
@@ -103,7 +103,14 @@ const OrganizationSignup: React.FC = () => {
         data.append(key, value);
       });
 
-      await OrgSignup(data);
+      const signupPromise = OrgSignup(data);
+      PopPromiseToast(
+        signupPromise,
+        "signing up...",
+        "signed up",
+        "please try again"
+      );
+      await signupPromise;
       setReceived(true);
     } catch (error) {
       console.error(error);

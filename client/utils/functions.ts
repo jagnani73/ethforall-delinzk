@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import toast from "react-hot-toast";
 
 import type { CustomFieldTypes } from "./types/shared.types";
 
@@ -23,4 +24,17 @@ export const DatesToTenure = (start: string, end: string | null): number => {
   if (!end) return _start;
   const _end = +end.split("-").join("");
   return +`${_start}${_end}`;
+};
+
+export const PopPromiseToast = (
+  promise: Promise<any>,
+  loading: string,
+  success: string,
+  error: string
+) => {
+  toast.promise(promise, {
+    loading,
+    success,
+    error,
+  });
 };

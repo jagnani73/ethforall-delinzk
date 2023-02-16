@@ -8,6 +8,7 @@ import { EditIcon, EmailIcon, IndustryIcon } from "@/public/icons";
 import { Button, CustomField, Message, OrgDetails } from ".";
 import { EmpProfileUpdate } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
+import { PopPromiseToast } from "@/utils/functions";
 
 const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
   const { JWE } = useAuth();
@@ -15,7 +16,14 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
   const submitHandler = useCallback(
     async (values: Record<string, any>) => {
       try {
-        await EmpProfileUpdate(JWE!, values);
+        const profilePromise = EmpProfileUpdate(JWE!, values);
+        PopPromiseToast(
+          profilePromise,
+          "updating profile...",
+          "profile updated",
+          "please try again"
+        );
+        await profilePromise;
       } catch (error) {
         console.error(error);
       } finally {

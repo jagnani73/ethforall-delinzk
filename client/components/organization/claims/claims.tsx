@@ -5,7 +5,11 @@ import * as Yup from "yup";
 import type { FieldClassnames } from "@/utils/types/shared.types";
 import type { ClaimSchema } from "@/utils/types/organization.types";
 import { Button, CustomField, Message } from "@/components/shared";
-import { CreateYupSchema, DatesToTenure } from "@/utils/functions";
+import {
+  CreateYupSchema,
+  DatesToTenure,
+  PopPromiseToast,
+} from "@/utils/functions";
 import { OrgCreateClaim } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
 
@@ -60,15 +64,29 @@ const OrganizationClaims: React.FC = () => {
   );
 
   const submitHandler = useCallback(
-    async (values: Record<string, any>) => {
-      const employee_tenure: number = DatesToTenure(
-        values["employee_start_date"],
-        values["employee_end_date"] ?? null
-      );
+    async (values: Record<string, any>, resetForm: () => void) => {
+      try {
+        const employee_tenure: number = DatesToTenure(
+          values["employee_start_date"],
+          values["employee_end_date"] ?? null
+        );
 
-      await OrgCreateClaim(JWE!, employee_tenure, values["employee_email"]);
-
-      // TODO: resetForm on success toast
+        const claimPromise = OrgCreateClaim(
+          JWE!,
+          employee_tenure,
+          values["employee_email"]
+        );
+        PopPromiseToast(
+          claimPromise,
+          "creating claim up...",
+          "claim created",
+          "please try again"
+        );
+        await claimPromise;
+        resetForm();
+      } catch (error) {
+        console.error(error);
+      }
     },
     [JWE]
   );
@@ -79,7 +97,9 @@ const OrganizationClaims: React.FC = () => {
         <article key={name}>
           <Formik
             enableReinitialize
-            onSubmit={submitHandler}
+            onSubmit={(values, { resetForm }) =>
+              submitHandler(values, resetForm)
+            }
             initialValues={{
               employee_email: "",
               employee_start_date: "",

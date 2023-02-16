@@ -11,7 +11,7 @@ import type {
   FieldClassnames,
 } from "@/utils/types/shared.types";
 import { Button, CustomField, Message, QRPage } from "@/components/shared";
-import { CreateYupSchema } from "@/utils/functions";
+import { CreateYupSchema, PopPromiseToast } from "@/utils/functions";
 import { EmpSignupForm } from "@/utils/services/api";
 
 const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
@@ -133,7 +133,14 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
           data.append(key, value);
         });
 
-        await EmpSignupForm(data);
+        const signupPromise = EmpSignupForm(data);
+        PopPromiseToast(
+          signupPromise,
+          "signing up...",
+          "signed up",
+          "please try again"
+        );
+        await signupPromise;
         setCompleted(true);
       } catch (error) {
         console.error(error);
