@@ -9,10 +9,7 @@ class TokenService {
       process.env.JWE_PRIVATEKEY!,
       "RS256"
     );
-    this.publicKey = await jose.importSPKI(
-      process.env.JWE_PUBLICKEY!,
-      "RS256"
-    );
+    this.publicKey = await jose.importSPKI(process.env.JWE_PUBLICKEY!, "RS256");
     this.jwsSecret = new TextEncoder().encode(process.env.JWS_SECRET);
     console.log("TokenService initiated successfully!");
   }
