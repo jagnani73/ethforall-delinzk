@@ -25,7 +25,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
     if (reqId) {
       replace("/organization/onboarding", undefined, { shallow: true });
 
-      socket.current = io(`ws://delinzk.loca.lt`, {
+      socket.current = io(`wss://${process.env.API_BASE_URL}`, {
         reconnectionDelayMax: 10000,
         extraHeaders: {
           "Bypass-Tunnel-Reminder": "true",
