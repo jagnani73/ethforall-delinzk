@@ -23,7 +23,7 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
     if (reqId) {
       replace("/employee/claim", undefined, { shallow: true });
 
-      socket.current = io(`wss://${process.env.API_BASE_URL}`, {
+      socket.current = io(process.env.NEXT_PUBLIC_API_HOSTNAME!, {
         reconnectionDelayMax: 10000,
         extraHeaders: {
           "Bypass-Tunnel-Reminder": "true",

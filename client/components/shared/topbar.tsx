@@ -25,15 +25,15 @@ const Topbar: React.FC = () => {
         <div className="flex items-center justify-center gap-x-8">
           <p className="font-bold text-lg text-white">Signin as</p>
 
-          <Link href="/organization/signin">
-            <Button primary={false} className="w-32">
-              Organization
-            </Button>
-          </Link>
-
           <Link href="/employee/signin">
             <Button primary={false} className="w-32">
               Employee
+            </Button>
+          </Link>
+
+          <Link href="/organization/signin">
+            <Button primary={false} className="w-32">
+              Organization
             </Button>
           </Link>
         </div>

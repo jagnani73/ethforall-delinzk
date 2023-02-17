@@ -107,8 +107,14 @@ const Admin: React.FC = () => {
   const approveHandler = useCallback(
     async (id: string) => {
       try {
-        const did = await OrgApprove(id, authenticated!);
-
+        const approvalPromise = OrgApprove(id, authenticated!);
+        PopPromiseToast(
+          approvalPromise,
+          "approving organization...",
+          "organization approved",
+          "please try again"
+        );
+        const did = await approvalPromise;
         setOrgs((prevState) =>
           prevState!.map((org) => (org.id === id ? { ...org, did } : org))
         );
