@@ -38,3 +38,17 @@ export type EmployeeType = {
 export interface EmployeeProfileProps {
   employee: EmployeeType;
 }
+
+export interface EmployeeProofOrg {
+  id: number;
+  name: string;
+  photo: string;
+}
+
+export interface EmployeeProofPageProps {
+  organizations: EmployeeProofOrg[];
+}
+
+export interface EmployeeProofProps {
+  organizations: EmployeeProofOrg[];
+}

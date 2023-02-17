@@ -51,7 +51,7 @@ export interface CustomTextareaProps extends CustomFieldProps {
 
 export interface CustomSelectProps extends CustomFieldProps {
   type: "select";
-  choices: { value: string; text: string }[];
+  choices: { value: string | number; content: React.ReactNode }[];
   placeholder?: string;
 }
 

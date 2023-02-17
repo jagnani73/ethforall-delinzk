@@ -2,7 +2,7 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 
 import type { AdminOrg } from "../types/admin.types";
-import type { EmployeeType } from "../types/employee.types";
+import type { EmployeeProofOrg, EmployeeType } from "../types/employee.types";
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `https://${process.env.NEXT_PUBLIC_API_HOSTNAME!}/api/v1`,
@@ -65,7 +65,7 @@ export const OrgSignin = async (): Promise<{
   qr: string;
   sessionId: string;
 }> => {
-  const { data, headers } = await apiInstance.get("/org/sign-in", {});
+  const { data, headers } = await apiInstance.get("/org/sign-in");
 
   return {
     qr: data,
@@ -116,7 +116,7 @@ export const EmpSignin = async (): Promise<{
   qr: string;
   sessionId: string;
 }> => {
-  const { data, headers } = await apiInstance.get("/user/sign-in", {});
+  const { data, headers } = await apiInstance.get("/user/sign-in");
 
   return {
     qr: data,
@@ -167,4 +167,41 @@ export const PublicProfile = async (
   const { data } = await apiInstance.get(`/user/profile/${username}`);
 
   return data.profile;
+};
+
+export const EmpProof = async (
+  token: string,
+  employee_tenure: number,
+  organization_id: string
+): Promise<{
+  qr: string;
+  sessionId: string;
+}> => {
+  const { data, headers } = await apiInstance.post(
+    "/user/proof",
+    {
+      employee_tenure,
+      organization_id,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return {
+    qr: data,
+    sessionId: headers["x-delinzk-session-id"] ?? null,
+  };
+};
+
+export const EmpProofOrgs = async (): Promise<EmployeeProofOrg[]> => {
+  const { data } = await apiInstance.get("/orgs", {
+    params: {
+      project: ["name", "id"].join(","),
+    },
+  });
+
+  return data.organizations;
 };

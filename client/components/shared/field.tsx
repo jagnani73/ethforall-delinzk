@@ -65,11 +65,11 @@ const FieldComponent: React.FC<CustomFieldTypes> = ({
             </option>
             {props.choices?.map((choice) => (
               <option
-                key={choice.value.trim()}
+                key={choice.value}
                 className={classnames?.option ?? ""}
                 value={choice.value}
               >
-                {choice.text}
+                {choice.content}
               </option>
             ))}
           </Field>

@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { Form, Formik } from "formik";
+import Link from "next/link";
 
 import type { ProfileProps } from "@/utils/types/shared.types";
 import { EditIcon, EmailIcon, IndustryIcon } from "@/public/icons";
@@ -149,13 +150,15 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                     <p className="text-3xl">Proof-of-Employments</p>
 
                     {!publicProfile && (
-                      <Button
-                        primary
-                        className="text-sm px-10 py-2"
-                        type="button"
-                      >
-                        + Add a claim
-                      </Button>
+                      <Link href="/employee/proof">
+                        <Button
+                          primary
+                          className="text-sm px-10 py-2"
+                          type="button"
+                        >
+                          Add a claim
+                        </Button>
+                      </Link>
                     )}
                   </div>
 

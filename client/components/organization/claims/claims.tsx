@@ -107,9 +107,7 @@ const OrganizationClaims: React.FC = () => {
             employee_end_date: "",
           }}
           validationSchema={Yup.object().shape(
-            [...INPUT_FIELDS, ...CLAIM_FIELDS]
-              .flat()
-              .reduce(CreateYupSchema, {})
+            [...INPUT_FIELDS, ...CLAIM_FIELDS].reduce(CreateYupSchema, {})
           )}
         >
           {({ errors, touched }) => (
