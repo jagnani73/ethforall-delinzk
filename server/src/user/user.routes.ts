@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import express, { Router, Request, Response, NextFunction } from "express";
 
 import validateQuery from "../middleware/verify-query.middleware";
 import injectSessionId from "../middleware/session.middleware";
@@ -7,14 +7,18 @@ import {
   userClaimPoeRequestSchema,
   userSignUpRequest,
   userSignUpRequestSchema,
+  userUpdateRequest,
+  userUpdateRequestSchema,
 } from "./user.schema";
 import {
   checkIfClaimOfferExists,
   createEmptyUser,
+  fetchUserPrivateDetails,
+  fetchUserPublicDetails,
   generateAuthQr,
   listenForClaimAuthComplete,
-  storeUserDetails,
   storeUserPhoto,
+  updateUserDetails,
 } from "./user.service";
 import { authVerify, generateClaimAuth } from "../org/org.service";
 import getRawBody from "raw-body";
@@ -105,7 +109,7 @@ const handleUserSignUpComplete = async (
     } = req.body as userSignUpRequest;
     const photo = req.file as Express.Multer.File;
     const photoUrl = await storeUserPhoto(photo);
-    await storeUserDetails(did, {
+    await updateUserDetails(did, {
       about,
       email,
       industry,
@@ -148,7 +152,7 @@ const handleUserSignIn = async (
   next: NextFunction
 ) => {
   try {
-    const qrData = await generateAuthQr(res.locals.sessionId,"sign-in");
+    const qrData = await generateAuthQr(res.locals.sessionId, "sign-in");
     res.setHeader("x-delinzk-session-id", res.locals.sessionId);
     res.setHeader("Access-Control-Expose-Headers", "x-delinzk-session-id");
     res.json(qrData);
@@ -174,6 +178,65 @@ const handleUserMe = async (
   }
 };
 
+const handleUserPublicProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { username } = req.params;
+    const profile = await fetchUserPublicDetails(username);
+    res.json({
+      success: true,
+      profile: profile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleUserPrivateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { did } = res.locals.user;
+    const profile = await fetchUserPrivateDetails(did);
+    res.json({
+      success: true,
+      profile: profile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleUserProfileUpdate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { did } = res.locals.user;
+    const {
+      employee_about: about,
+      employee_industry: industry,
+      employee_name: name,
+    } = req.body as userUpdateRequest;
+    await updateUserDetails(did, {
+      about,
+      industry,
+      name,
+    });
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get(
   "/claim-poe",
   validateQuery("query", userClaimPoeRequestSchema),
@@ -190,5 +253,14 @@ router.post(
   handleUserSignUpComplete
 );
 router.get("/me", verifyUser, handleUserMe);
+router.post(
+  "/profile/update",
+  verifyUser,
+  express.json(),
+  validateQuery("body", userUpdateRequestSchema),
+  handleUserProfileUpdate
+);
+router.get("/profile/:username", handleUserPublicProfile);
+router.get("/profile", verifyUser, handleUserPrivateProfile);
 
 export default router;

@@ -35,7 +35,11 @@ body,
     src: url("/fonts/ModernEra-ExtraBold.otf");
   }
 
+  .effect-shadow-hover {
+    @apply shadow-[-1px_1px,-2px_2px,-3px_3px,-4px_4px,-5px_5px,-6px_6px,-7px_7px,-8px_8px,-9px_9px,-10px_10px] shadow-onyx;
+  }
+
   .effect-shadow {
-    @apply transition-all duration-300 shadow-[1px_-1px,2px_-2px,3px_-3px,4px_-4px,5px_-5px,6px_-6px,7px_-7px,8px_-8px,9px_-9px,10px_-10px] shadow-slate-blue hover:shadow-none;
+    @apply transition-all duration-300 shadow-[1px_-1px,2px_-2px,3px_-3px,4px_-4px,5px_-5px,6px_-6px,7px_-7px,8px_-8px,9px_-9px,10px_-10px] shadow-slate-blue hover:effect-shadow-hover;
   }
 }

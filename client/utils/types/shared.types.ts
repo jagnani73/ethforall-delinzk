@@ -1,7 +1,8 @@
+import type { EmployeeType } from "./employee.types";
+
 export interface FieldClassnames {
   wrapper?: string;
   input?: string;
-  description?: string;
   label?: string;
   option?: string;
 }
@@ -85,5 +86,11 @@ export interface QRPageProps {
 }
 
 export interface MessageProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export interface ProfileProps {
+  publicProfile: boolean;
+  employee: EmployeeType;
 }

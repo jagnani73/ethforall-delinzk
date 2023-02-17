@@ -28,3 +28,14 @@ export const userSignUpRequestSchema = yup.object({
 });
 
 export type userSignUpRequest = yup.InferType<typeof userSignUpRequestSchema>;
+
+export const userUpdateRequestSchema = yup.object({
+  employee_name: yup.string().trim().required("employee_name is required"),
+  employee_industry: yup
+    .string()
+    .trim()
+    .required("employee_industry is required"),
+  employee_about: yup.string().trim().required("employee_about is required"),
+});
+
+export type userUpdateRequest = yup.InferType<typeof userUpdateRequestSchema>;

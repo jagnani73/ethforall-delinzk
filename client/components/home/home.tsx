@@ -34,10 +34,10 @@ const Home: React.FC = () => {
       <div className="flex w-9/12 mx-auto h-full items-center">
         <div className="w-full flex flex-col h-full p-8 justify-center">
           <h1 className="group text-6xl flex flex-col h-40 whitespace-nowrap font-bold">
-            <span className="bg-white effect-shadow w-fit p-2 group-hover:shadow-none z-10">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-10 group-hover:z-0 group-hover:text-slate-blue">
               BUIDLing a
             </span>
-            <span className="bg-white effect-shadow w-fit p-2 group-hover:shadow-none">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-0 group-hover:z-10 group-hover:text-slate-blue">
               something amazing
             </span>
           </h1>

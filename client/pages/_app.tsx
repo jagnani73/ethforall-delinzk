@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
+import { Toaster } from "react-hot-toast";
 
 import "@/styles/globals.css";
 import { Layout } from "@/components/shared";
@@ -28,6 +29,8 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>deLinZK</title>
       </Head>
+
+      <Toaster />
 
       {loading && (
         <div className="w-full h-screen z-50 fixed flex items-center justify-center top-0 left-0 bg-transparent backdrop-blur">
