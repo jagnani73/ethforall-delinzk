@@ -5,7 +5,7 @@ import type { AdminOrg } from "../types/admin.types";
 import type { EmployeeType } from "../types/employee.types";
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: "https://delinzk.loca.lt/api/v1",
+  baseURL: process.env.API_BASE_URL,
   headers: {
     "Bypass-Tunnel-Reminder": 1,
   },
