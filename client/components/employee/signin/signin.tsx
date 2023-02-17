@@ -16,7 +16,7 @@ const EmployeeSignin: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
   const { JWE, setJWE } = useAuth();
 
   useEffect(() => {
-    socket.current = io(`ws://delinzk.loca.lt`, {
+    socket.current = io(`wss://${process.env.API_BASE_URL}`, {
       reconnectionDelayMax: 10000,
       extraHeaders: {
         "Bypass-Tunnel-Reminder": "true",
