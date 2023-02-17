@@ -38,7 +38,7 @@ const verifyAdmin = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
     const authToken = authorization.split(" ")[1];
-    const payload = verify(authToken, process.env.SECRET_KEY!, {
+    const payload = verify(authToken, process.env.ADMIN_JWT_SECRET_KEY!, {
       issuer: "deLinZK",
     }) as JwtPayload;
     if (payload.admin) {

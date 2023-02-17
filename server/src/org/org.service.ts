@@ -22,7 +22,7 @@ export const generateAuthQr = async (sessionId: string) => {
   const request = auth.createAuthorizationRequestWithMessage(
     "Sign in as a verified organization into deLinZK.",
     "I hereby verify that I am an verified organization of deLinZK.",
-    process.env.ISSUERID!,
+    process.env.POLYGONID_ISSUERDID!,
     `${hostUrl}/api/v1/org/sign-in-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -34,7 +34,7 @@ export const generateAuthQr = async (sessionId: string) => {
     circuit_id: "credentialAtomicQuerySig",
     rules: {
       query: {
-        allowedIssuers: [process.env.ISSUERID!],
+        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
         schema: {
           type: "deLinZK Verified Organization",
           url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/fea6164e-c164-4ce1-b204-4e841698ac33.json-ld",
@@ -262,7 +262,7 @@ export const generateBasicAuthQr = async (reqId: string) => {
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.ISSUERID!,
+    process.env.POLYGONID_ISSUERDID!,
     `${hostUrl}/api/v1/org/sign-up-complete-callback?sessionId=${reqId}`
   );
   const requestId = v4();

@@ -67,7 +67,7 @@ export const createJWToken = async (email: string) => {
       email: email,
       admin: true,
     },
-    process.env.SECRET_KEY!,
+    process.env.ADMIN_JWT_SECRET_KEY!,
     {
       issuer: "deLinZK",
       expiresIn: "24h",
@@ -101,8 +101,8 @@ export const getAdminAuthToken = async (): Promise<string> => {
     const { data } = await axios.post(
       "https://api-staging.polygonid.com/v1/orgs/sign-in",
       {
-        email: process.env.ADMIN_EMAIL!,
-        password: process.env.ADMIN_PASSWORD!,
+        email: process.env.POLYGONID_ADMIN_EMAIL!,
+        password: process.env.POLYGONID_ADMIN_PASSWORD!,
       }
     );
     await cache?.set("delinzk:admin:auth-token", data.token, {
