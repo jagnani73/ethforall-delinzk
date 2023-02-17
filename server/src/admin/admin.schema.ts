@@ -18,7 +18,7 @@ export const adminLoginRequestSchema = yup.object({
     .trim()
     .email("admin_email must be a valid e-mail")
     .required("admin_email is required"),
-  admin_password: yup.string().trim().required("admin_password is required")
+  admin_password: yup.string().trim().required("admin_password is required"),
 });
 
 export type adminLoginRequest = yup.InferType<typeof adminLoginRequestSchema>;
