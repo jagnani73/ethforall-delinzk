@@ -420,3 +420,29 @@ export const sendClaimOfferEmail = async (email: string, reqId: string) => {
 
   await EmailService.sendEmail(email, rawEmail);
 };
+
+export const sendOrganizationSignupCompleteEmail = async (orgId: number) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("orgs")
+    .select("email")
+    .eq("id", orgId);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  const email = data[0]?.email;
+  const rawEmail = await EmailService.generateEmail(
+    "org-signup",
+    email,
+    "Hello Organization Admin 👷! We've received your request for signing up on deLinZK",
+    {},
+    []
+  );
+  await EmailService?.sendEmail(email, rawEmail);
+};
