@@ -101,6 +101,9 @@ const handleOrgSignUp = async (
       size
     );
     await storeAndUpdateLicense(insertedId, license);
+    Promise.all([sendOrganizationSignupCompleteEmail(insertedId)]).catch((e) =>
+      console.error(e)
+    );
     res.json({
       success: true,
       id: insertedId,
@@ -169,7 +172,6 @@ const handleOrgSignUpCompleteCallback = async (
     const orgId = await storeOrgDid(orgDid, sessionId);
     await generateOrgClaim(sessionId);
     await clearSignupCache(orgId, sessionId);
-    Promise.all([sendOrganizationSignupCompleteEmail(orgId)])
     res.send("OK");
   } catch (err) {
     next(err);
