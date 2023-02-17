@@ -20,6 +20,13 @@ app.use(cors());
 app.use("/api/v1/org", orgRoutes);
 app.use("/api/v1/admin", express.json(), adminRoutes);
 app.use("/api/v1/user", userRoutes);
+app.get("/api/v1/healthcheck", (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
   res.status(405).json({
