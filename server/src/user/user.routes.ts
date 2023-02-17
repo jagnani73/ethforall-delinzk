@@ -17,6 +17,7 @@ import {
   fetchUserPublicDetails,
   generateAuthQr,
   listenForClaimAuthComplete,
+  sendUserSignupCompleteEmail,
   storeUserPhoto,
   updateUserDetails,
 } from "./user.service";
@@ -117,6 +118,9 @@ const handleUserSignUpComplete = async (
       username,
       photo: photoUrl,
     });
+    Promise.all([sendUserSignupCompleteEmail(email)]).catch((e) =>
+      console.error(e)
+    );
     res.json({
       success: true,
     });

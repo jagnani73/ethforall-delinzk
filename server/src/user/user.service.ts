@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import TunnelService from "../services/tunnel.service";
 import { auth } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
+import EmailService from "../services/email.service";
 
 export interface UpdateUserData {
   about: string;
@@ -177,4 +178,15 @@ export const fetchUserPrivateDetails = async (did: string) => {
     throw err;
   }
   return data[0];
+};
+
+export const sendUserSignupCompleteEmail = async (email: string) => {
+  const rawEmail = await EmailService.generateEmail(
+    "user-signup",
+    email,
+    "Hello there, hustler 🧑‍💻! Welcome to deLinZK ❤️",
+    {},
+    []
+  );
+  await EmailService?.sendEmail(email, rawEmail);
 };

@@ -18,6 +18,7 @@ import {
   generateClaimOffer,
   storeClaimOffer,
   sendClaimOfferEmail,
+  sendOrganizationSignupCompleteEmail,
 } from "./org.service";
 import { parseLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
@@ -168,7 +169,7 @@ const handleOrgSignUpCompleteCallback = async (
     const orgId = await storeOrgDid(orgDid, sessionId);
     await generateOrgClaim(sessionId);
     await clearSignupCache(orgId, sessionId);
-
+    Promise.all([sendOrganizationSignupCompleteEmail(orgId)])
     res.send("OK");
   } catch (err) {
     next(err);

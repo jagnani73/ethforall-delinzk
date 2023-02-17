@@ -21,6 +21,9 @@ class SocketService {
         const sessionId = socket.handshake.query["x-session-id"] as string;
         socket.join(sessionId);
       });
+      this.io.on("disconnect", (socket) => {
+        console.log("New client disconnected:", socket.id);
+      });
     } catch (err) {
       console.error("Could not connect to Socket.IO Server");
       console.error("SocketIOError\n%o", { error: err });
