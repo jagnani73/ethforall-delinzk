@@ -13,7 +13,7 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
 }) => {
   const socket = useRef<Socket>();
 
-  const { push } = useRouter();
+  const { replace } = useRouter();
 
   const { setJWE } = useAuth();
 
@@ -30,7 +30,7 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
 
     socket.current.on("auth", (jwe) => {
       setJWE(jwe);
-      push("/organization/claims");
+      replace("/organization/claims");
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,7 +43,10 @@ const OrganizationSignin: React.FC<OrganizationSigninProps> = ({
         <span className="text-center block">Signin as an Organization!</span>
       }
       description={
-        <>Make sure you are verified as an Organization before signing in.</>
+        <>
+          Make sure you are <span className="font-bold">verified</span> as an
+          Organization before signing in.
+        </>
       }
     />
   );

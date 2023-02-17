@@ -54,7 +54,7 @@ const OrganizationSignup: React.FC = () => {
         id: "org_size",
         name: "org_size",
         type: "number",
-        placeholder: "What is the team size?",
+        placeholder: "Enter the team size",
         validationtype: "string",
         validations: [
           {
@@ -68,7 +68,7 @@ const OrganizationSignup: React.FC = () => {
         id: "org_tagline",
         name: "org_tagline",
         type: "text",
-        placeholder: "What is your tagline?",
+        placeholder: "Enter the organization tagline",
         validationtype: "string",
         validations: [
           {
@@ -82,7 +82,7 @@ const OrganizationSignup: React.FC = () => {
         id: "org_email",
         name: "org_email",
         type: "email",
-        placeholder: "Enter the email address",
+        placeholder: "Enter the organization email address",
         validationtype: "string",
         validations: [
           {
@@ -133,11 +133,15 @@ const OrganizationSignup: React.FC = () => {
             <Form className="w-96">
               <div className="text-center mb-8">
                 <h3 className="font-medium text-4xl text-center mb-4">
-                  Welcome
+                  Welcome!
                 </h3>
 
                 <p className="text-onyx text-opacity-75">
-                  Please fill out the following details
+                  We would love to know more about you and your vision 📔
+                  <br />
+                  <span className="text-opacity-50 text-sm">
+                    (so will the future mission leaders)
+                  </span>
                 </p>
               </div>
 
@@ -187,7 +191,7 @@ const OrganizationSignup: React.FC = () => {
               </div>
 
               <Button primary type="submit" className="w-full mt-6">
-                Signup
+                Join the experience ✨
               </Button>
             </Form>
           )}
@@ -197,13 +201,12 @@ const OrganizationSignup: React.FC = () => {
           <h2 className="text-4xl font-semibold">Congratulations 🎉</h2>
 
           <h3 className="mt-8 text-xl">
-            We have received your application, and have sent a mail for the
-            same.
+            Verification can take a few days, you will receive an email when you
+            have been successfully verified.
           </h3>
 
           <p className="mt-6 text-onyx text-opacity-75">
-            Verification can take a few days, you will receive an email when you
-            have been successfully verified.
+            HODL your breath, you are about to be identified on the network!
           </p>
         </>
       )}

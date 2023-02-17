@@ -2,8 +2,10 @@ import { useCallback, useMemo } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
-import type { FieldClassnames } from "@/utils/types/shared.types";
-import type { ClaimSchema } from "@/utils/types/organization.types";
+import type {
+  CustomFieldTypes,
+  FieldClassnames,
+} from "@/utils/types/shared.types";
 import { Button, CustomField, Message } from "@/components/shared";
 import {
   CreateYupSchema,
@@ -18,48 +20,50 @@ const OrganizationClaims: React.FC = () => {
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
-      wrapper: "w-full first:mb-10",
+      wrapper: "w-full",
       input:
         "rounded p-4 w-full bg-onyx bg-opacity-5 border-2 border-slate-blue border-opacity-50 focus:border-opacity-100 transition-all outline-none",
       description: "text-red-400 text-sm font-medium mt-0.5 pl-1",
-      label: "text-left mr-auto block",
+      label: "text-left mr-auto block text-opacity-75 text-onyx font-medium",
     }),
     []
   );
 
-  const CLAIMS = useMemo<ClaimSchema[]>(
+  const INPUT_FIELDS = useMemo<CustomFieldTypes[]>(
     () => [
       {
-        name: "POE",
-        description: "this is POE",
-        fields: [
-          {
-            name: "employee_email",
-            id: "employee_email",
-            type: "text",
-            label: "Employee email to send claim offer to",
-            placeholder: "gita@hashlabs.dev",
-            classnames: CLASSNAMES,
-          },
-          {
-            name: "employee_start_date",
-            id: "employee_start_date",
-            type: "date",
-            label: "Start Date",
-            description: "Start date",
-            classnames: CLASSNAMES,
-          },
-          {
-            name: "employee_end_date",
-            id: "employee_end_date",
-            type: "date",
-            label: "End Date",
-            description: "End date",
-            classnames: CLASSNAMES,
-          },
-        ],
+        name: "employee_email",
+        id: "employee_email",
+        type: "text",
+        label: "Employee email to send claim offer",
+        placeholder: "gita@hashlabs.dev",
+        classnames: CLASSNAMES,
       },
     ],
+
+    [CLASSNAMES]
+  );
+
+  const CLAIM_FIELDS = useMemo<CustomFieldTypes[]>(
+    () => [
+      {
+        name: "employee_start_date",
+        id: "employee_start_date",
+        type: "date",
+        label: "Start date of employee tenure",
+        description: "Start date",
+        classnames: CLASSNAMES,
+      },
+      {
+        name: "employee_end_date",
+        id: "employee_end_date",
+        type: "date",
+        label: "End date of employee tenure (if applicable)",
+        description: "End date",
+        classnames: CLASSNAMES,
+      },
+    ],
+
     [CLASSNAMES]
   );
 
@@ -78,8 +82,8 @@ const OrganizationClaims: React.FC = () => {
         );
         PopPromiseToast(
           claimPromise,
-          "creating claim up...",
-          "claim created",
+          "creating claim offer...",
+          "claim offer created",
           "please try again"
         );
         await claimPromise;
@@ -93,54 +97,71 @@ const OrganizationClaims: React.FC = () => {
 
   return (
     <Message>
-      {CLAIMS.map(({ fields, name, description }) => (
-        <article key={name}>
-          <Formik
-            enableReinitialize
-            onSubmit={(values, { resetForm }) =>
-              submitHandler(values, resetForm)
-            }
-            initialValues={{
-              employee_email: "",
-              employee_start_date: "",
-              employee_end_date: "",
-            }}
-            validationSchema={Yup.object().shape(
-              fields.reduce(CreateYupSchema, {})
-            )}
-          >
-            {({ errors, touched }) => (
-              <Form className="w-96 text-center">
-                <h2 className="text-4xl font-bold">{name}</h2>
+      <article>
+        <Formik
+          enableReinitialize
+          onSubmit={(values, { resetForm }) => submitHandler(values, resetForm)}
+          initialValues={{
+            employee_email: "",
+            employee_start_date: "",
+            employee_end_date: "",
+          }}
+          validationSchema={Yup.object().shape(
+            [...INPUT_FIELDS, ...CLAIM_FIELDS]
+              .flat()
+              .reduce(CreateYupSchema, {})
+          )}
+        >
+          {({ errors, touched }) => (
+            <Form className="w-96">
+              <h2 className="text-4xl font-bold">
+                Generate Proof-of-Employment 🛠️
+              </h2>
 
-                <p className="text-onyx text-opacity-75 font-medium my-4">
-                  {description}
-                </p>
+              <p className="text-onyx text-opacity-75 my-4">
+                Give your employee an acclaim for being a part of your
+                organization
+              </p>
 
-                <div className="flex flex-col gap-y-2 w-full mt-2">
-                  {fields.map((field) => (
-                    <CustomField
-                      key={field.name}
-                      {...field}
-                      description={
-                        // @ts-ignore
-                        touched[field.name] && errors[field.name]
-                          ? // @ts-ignore
-                            errors[field.name] ?? null
-                          : null
-                      }
-                    />
-                  ))}
-                </div>
+              <div className="flex flex-col gap-y-2 w-full mt-2">
+                {INPUT_FIELDS.map((field) => (
+                  <CustomField
+                    key={field.name}
+                    {...field}
+                    description={
+                      // @ts-ignore
+                      touched[field.name] && errors[field.name]
+                        ? // @ts-ignore
+                          errors[field.name] ?? null
+                        : null
+                    }
+                  />
+                ))}
 
-                <Button primary type="submit" className="mt-8 px-10">
-                  Offer Claim
-                </Button>
-              </Form>
-            )}
-          </Formik>
-        </article>
-      ))}
+                <h4 className="font-semibold text-2xl mt-6 mb-2">Tenure</h4>
+
+                {CLAIM_FIELDS.map((field) => (
+                  <CustomField
+                    key={field.name}
+                    {...field}
+                    description={
+                      // @ts-ignore
+                      touched[field.name] && errors[field.name]
+                        ? // @ts-ignore
+                          errors[field.name] ?? null
+                        : null
+                    }
+                  />
+                ))}
+              </div>
+
+              <Button primary type="submit" className="mt-8 px-10 mx-auto flex">
+                Send Claim Offer 📩
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </article>
     </Message>
   );
 };

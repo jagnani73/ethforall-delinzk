@@ -60,15 +60,20 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
             only, to connect your wallet address to deLinZK.
           </>
         ),
+        footer: (
+          <p className="mt-4 text-center font-bold text-red-600">
+            Make sure you select the wallet that was used to signup.
+          </p>
+        ),
       },
       {
         heading: (
           <>
-            <span className="text-slate-blue">2/2</span> Claim your Proof of
-            Employment!
+            <span className="text-slate-blue">2/2</span> Claim your
+            Proof-of-Employment!
           </>
         ),
-        description: <>This will store the your claim.</>,
+        description: <>Claim whats yours! 👑</>,
         footer: (
           <>
             <p className="text-onyx text-opacity-75 text-center mt-8 text-sm">
@@ -79,18 +84,9 @@ const EmployeeClaim: React.FC<EmployeeClaimProps> = ({ linkQR }) => {
               <Link href="/">
                 <Button
                   primary={false}
-                  className="border-2 border-slate-blue px-8"
-                >
-                  Go home
-                </Button>
-              </Link>
-
-              <Link href="/employee/signin">
-                <Button
-                  primary={true}
                   className="border-2 border-slate-blue px-12"
                 >
-                  Signin
+                  Go Home
                 </Button>
               </Link>
             </div>

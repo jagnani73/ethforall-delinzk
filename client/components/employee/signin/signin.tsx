@@ -55,6 +55,12 @@ const EmployeeSignin: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
       heading={
         <span className="text-center block mb-8">Signin as an Employee!</span>
       }
+      description={
+        <>
+          Make sure you use the wallet that was used to{" "}
+          <span className="font-bold">signup</span>.
+        </>
+      }
     />
   );
 };

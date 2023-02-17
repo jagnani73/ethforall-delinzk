@@ -68,6 +68,12 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
             <span className="font-bold">deLinZK</span>.
           </>
         ),
+        footer: (
+          <p className="mt-4 text-center font-bold text-red-600">
+            Make sure you select the wallet carefully. This wallet will be used
+            to authenticate and operate on deLinZK
+          </p>
+        ),
       },
       {
         heading: (
@@ -92,15 +98,18 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
         ),
         description: (
           <>
-            One last step before you are finally onboarded! This is the claim
-            that you will own. It is proof that your organization is verified
-            with <span className="font-bold">deLinZK</span>.
+            <span className="font-bold">
+              <span className="text-slate-blue">WAGMI!</span> One last step
+            </span>{" "}
+            before you are finally onboarded! This is the claim that you will
+            own. It is proof that your organization is verified with{" "}
+            <span className="font-bold">deLinZK</span>.
           </>
         ),
         footer: (
           <>
             <p className="text-onyx text-opacity-75 text-center mt-8 text-sm font-medium">
-              Once claimed, you are all done now!
+              Once claimed, you are all done now! 🥳
             </p>
 
             <div className="flex justify-evenly mt-6">
@@ -109,16 +118,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
                   primary={false}
                   className="border-2 border-slate-blue px-4 py-2 text-sm"
                 >
-                  Go home
-                </Button>
-              </Link>
-
-              <Link href="/organization/signin">
-                <Button
-                  primary={true}
-                  className="border-2 border-slate-blue px-8 py-2 text-sm"
-                >
-                  Signin
+                  Go Home
                 </Button>
               </Link>
             </div>

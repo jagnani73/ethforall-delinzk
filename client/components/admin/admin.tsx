@@ -142,11 +142,11 @@ const Admin: React.FC = () => {
               <Form className="w-96">
                 <div className="text-center mb-8">
                   <h3 className="font-medium text-4xl text-center mb-4">
-                    Welcome
+                    Welcome Admin
                   </h3>
 
                   <p className="text-onyx text-opacity-75">
-                    Please fill out the following details
+                    We need to verify you, even if you are one of us
                   </p>
                 </div>
 
@@ -237,7 +237,7 @@ const Admin: React.FC = () => {
                           <Button
                             primary
                             onClick={() => approveHandler(id)}
-                            className="px-8 mx-auto flex mt-8"
+                            className="px-12 mx-auto flex mt-8"
                           >
                             Approve
                           </Button>

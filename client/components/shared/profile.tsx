@@ -45,7 +45,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
       >
         {() => (
           <Form className="w-full h-full">
-            <h2 className="my-8 mb-12 text-4xl font-bold ml-8">Profile</h2>
+            <h2 className="my-4 mb-8 text-4xl font-bold ml-8">Profile</h2>
 
             <div className="flex h-full items-start w-full">
               <div className="flex items-center text-center flex-col w-1/4 h-full bg-pale-purple pt-8">
@@ -129,7 +129,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                 </p>
 
                 {publicProfile ? (
-                  <p className="h-60 overflow-y-auto border-dashed border-2 rounded-lg border-slate-blue p-4">
+                  <p className="h-40 overflow-y-auto border-dashed border-2 rounded-lg border-slate-blue p-4">
                     {employee.about}
                   </p>
                 ) : (
@@ -138,16 +138,28 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                     name="employee_about"
                     type="textarea"
                     classnames={{
-                      wrapper: "h-60",
+                      wrapper: "h-40",
                       input:
                         "w-full h-full p-4 transition-all outline-none overflow-visible overflow-y-auto border-dashed border-2 rounded-lg focus:border-solid border-slate-blue",
                     }}
                   />
                 )}
                 <div className="mt-16">
-                  <p className="text-3xl">Proofs</p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-3xl">Proof-of-Employments</p>
 
-                  <p className="font-light mt-4">no proofs yet</p>
+                    {!publicProfile && (
+                      <Button
+                        primary
+                        className="text-sm px-10 py-2"
+                        type="button"
+                      >
+                        + Add a claim
+                      </Button>
+                    )}
+                  </div>
+
+                  <p className="font-light mt-4">No claims to show.</p>
                 </div>
               </div>
             </div>

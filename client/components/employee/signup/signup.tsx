@@ -36,7 +36,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         id: "employee_name",
         name: "employee_name",
         type: "text",
-        placeholder: "Enter the name",
+        placeholder: "Enter your name",
         validationtype: "string",
         validations: [
           {
@@ -50,7 +50,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         id: "employee_username",
         name: "employee_username",
         type: "text",
-        placeholder: "Whats your username?",
+        placeholder: "Enter your username",
         validationtype: "string",
         validations: [
           {
@@ -64,7 +64,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         id: "employee_industry",
         name: "employee_industry",
         type: "text",
-        placeholder: "Enter the type of Industry",
+        placeholder: "Enter the type of Industry you work in",
         validationtype: "string",
         validations: [
           {
@@ -92,7 +92,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
         id: "employee_email",
         name: "employee_email",
         type: "email",
-        placeholder: "Enter the email address",
+        placeholder: "Enter your email address",
         validationtype: "string",
         validations: [
           {
@@ -171,6 +171,12 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
                 only to connect your wallet address to deLinZK.
               </>
             }
+            footer={
+              <p className="mt-4 text-center font-bold text-red-600">
+                Make sure you select the wallet carefully. This wallet will be
+                used to authenticate and operate on deLinZK
+              </p>
+            }
           />
         ) : (
           <Message>
@@ -186,11 +192,13 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
                 <Form className="w-96">
                   <div className="mb-8">
                     <h3 className="font-semibold text-2xl mb-4">
-                      <span className="text-slate-blue">2/2</span> Basic Details
+                      <span className="text-slate-blue">2/2</span> Let's get to
+                      know you. 🤝
                     </h3>
 
                     <p className="text-onyx text-opacity-75">
-                      Please fill out the following
+                      Organizations would be as enthralled to know you as we
+                      are.
                     </p>
                   </div>
 
@@ -222,7 +230,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
                         }
                       >
                         {/* @ts-ignore */}
-                        {values["employee_photo"]?.name ?? "Upload a photo"}
+                        {values["employee_photo"]?.name ?? "Upload your photo"}
                       </span>
 
                       <input
@@ -240,7 +248,7 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
                   </div>
 
                   <Button primary type="submit" className="w-full mt-6">
-                    Signup
+                    LFG, Signup! 🚀
                   </Button>
                 </Form>
               )}
@@ -248,27 +256,22 @@ const EmployeeSignup: React.FC<EmployeeSignupProps> = ({ qr, sessionId }) => {
           </Message>
         )
       ) : (
-        <Message>
-          <h3 className="font-semibold text-4xl mb-8 text-center">
-            Completed 🥳
-          </h3>
+        <Message className="w-96">
+          <h3 className="font-semibold text-4xl mb-8">Good to go! 🔥</h3>
+
+          <p className="text-onyx text-opacity-75 mb-8">
+            Welcome to deLinZK! We're excited to have you on board and look
+            forward to helping you verify your experiences' legitimacy and
+            employee tenure securely and efficiently.
+          </p>
 
           <div className="flex justify-evenly gap-x-4">
             <Link href="/">
               <Button
                 primary={false}
-                className="border-2 border-slate-blue px-8"
+                className="border-2 border-slate-blue px-10"
               >
-                Go home
-              </Button>
-            </Link>
-
-            <Link href="/employee/signin">
-              <Button
-                primary={true}
-                className="border-2 border-slate-blue px-12"
-              >
-                Signin
+                Go Home
               </Button>
             </Link>
           </div>

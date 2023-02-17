@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 import type { EmployeeType } from "@/utils/types/employee.types";
 import { Profile } from "@/components/shared";
@@ -30,7 +31,18 @@ const EmployeeProfilePage: NextPage = () => {
   return (
     <>
       {!employee ? (
-        <div>loading</div>
+        <div className="flex flex-col items-center justify-center w-full">
+          <Image
+            height={160}
+            width={160}
+            alt="deLinZK | profile loader"
+            src="/page-loader.gif"
+          />
+
+          <p className="font-bold mt-8 text-2xl">
+            Cooking up 👨‍🍳 your profile...
+          </p>
+        </div>
       ) : (
         <Profile employee={employee} publicProfile={false} />
       )}

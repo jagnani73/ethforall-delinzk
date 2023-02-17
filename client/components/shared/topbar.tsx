@@ -11,13 +11,7 @@ const Topbar: React.FC = () => {
     <aside className="py-4 bg-slate-blue px-28 flex items-center justify-between">
       <Link href="/">
         <figure>
-          <Image
-            src="/logo.png"
-            alt="deLinZK logo"
-            width={240}
-            height={240}
-            className="bg-red-50"
-          />
+          <Image src="/logo.png" alt="deLinZK logo" width={240} height={240} />
         </figure>
       </Link>
 
