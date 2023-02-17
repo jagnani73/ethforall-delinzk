@@ -4,7 +4,7 @@ class TunnelService {
   private constructor() {}
   public static async initTunnel() {
     TunnelService.tunnel = await localtunnel(+process.env.PORT!, {
-      subdomain: process.env.SUBDOMAIN!,
+      subdomain: process.env.LOCALTUNNEL_SUBDOMAIN!,
     });
     console.log("Localtunnel opened on link:", TunnelService.tunnel.url);
     process.on("SIGINT", () => TunnelService.tunnel!.close());

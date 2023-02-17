@@ -59,7 +59,7 @@ export const generateAuthQr = async (
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.ISSUERID!,
+    process.env.POLYGONID_ISSUERDID!,
     `${hostUrl}/api/v1/user/${action}-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
