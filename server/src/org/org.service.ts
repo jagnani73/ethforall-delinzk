@@ -440,7 +440,7 @@ export const sendOrganizationSignupCompleteEmail = async (orgId: number) => {
   const rawEmail = await EmailService.generateEmail(
     "org-signup",
     email,
-    "Congratulations 🥳! You have finished signing up on deLinZK",
+    "Hello Organization Admin 👷! We've received your request for signing up on deLinZK",
     {},
     []
   );
