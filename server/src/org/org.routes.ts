@@ -219,7 +219,6 @@ const handleGetOrgsData = async (
 ) => {
   try {
     const { id, projection } = req.query;
-    console.dir(req.query);
     const parsedId = id ? +id : undefined;
     const parsedProjection: string[] = [];
     if (projection) {
