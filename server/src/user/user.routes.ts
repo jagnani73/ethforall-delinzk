@@ -3,6 +3,8 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import validateQuery from "../middleware/verify-query.middleware";
 import injectSessionId from "../middleware/session.middleware";
 import {
+  addPoeRequest,
+  addPoeRequestSchema,
   userClaimPoeRequest,
   userClaimPoeRequestSchema,
   userSignUpRequest,
@@ -20,6 +22,8 @@ import {
   sendUserSignupCompleteEmail,
   storeUserPhoto,
   updateUserDetails,
+  generateProofQr,
+  storeProofOfEmployment,
 } from "./user.service";
 import { authVerify, generateClaimAuth } from "../org/org.service";
 import getRawBody from "raw-body";
@@ -241,6 +245,48 @@ const handleUserProfileUpdate = async (
   }
 };
 
+const handleAddPoe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sessionId = res.locals.sessionId;
+    const { id: userId } = res.locals.user;
+    const { orgId, tenure } = req.body as addPoeRequest;
+    const qrData = await generateProofQr(sessionId, userId, orgId, tenure);
+    res.setHeader("x-delinzk-session-id", res.locals.sessionId);
+    res.setHeader("Access-Control-Expose-Headers", "x-delinzk-session-id");
+    res.json(qrData);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleAddPoeCallback = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sessionId = req.query.sessionId;
+    console.log("Callback session ID:", sessionId);
+    const raw = await getRawBody(req);
+    const jwz = raw.toString().trim();
+    console.log("JWZ Received:");
+    console.dir(jwz, { depth: null });
+    const result = await authVerify(sessionId as string, jwz, false);
+    console.log("handleOrgSignInCallback authResponse:");
+    console.dir(result, { depth: null });
+    Promise.all([storeProofOfEmployment(sessionId as string)]).catch((e) =>
+      console.error(e)
+    );
+    res.send("OK");
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get(
   "/claim-poe",
   validateQuery("query", userClaimPoeRequestSchema),
@@ -266,5 +312,14 @@ router.post(
 );
 router.get("/profile/:username", handleUserPublicProfile);
 router.get("/profile", verifyUser, handleUserPrivateProfile);
+router.post(
+  "/add-poe",
+  verifyUser,
+  express.json(),
+  validateQuery("body", addPoeRequestSchema),
+  injectSessionId,
+  handleAddPoe
+);
+router.post("/add-poe-callback", handleAddPoeCallback);
 
 export default router;

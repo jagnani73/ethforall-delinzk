@@ -39,3 +39,10 @@ export const userUpdateRequestSchema = yup.object({
 });
 
 export type userUpdateRequest = yup.InferType<typeof userUpdateRequestSchema>;
+
+export const addPoeRequestSchema = yup.object({
+  orgId: yup.number().required("orgId is required"),
+  tenure: yup.number().required("tenure is required"),
+});
+
+export type addPoeRequest = yup.InferType<typeof addPoeRequestSchema>;
