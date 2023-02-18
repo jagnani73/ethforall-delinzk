@@ -19,6 +19,7 @@ import {
   storeClaimOffer,
   sendClaimOfferEmail,
   sendOrganizationSignupCompleteEmail,
+  getOrgsData,
 } from "./org.service";
 import { parseLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
@@ -211,6 +212,31 @@ const handleOrgCreatePoe = async (
   }
 };
 
+const handleGetOrgsData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, projection } = req.query;
+    console.dir(req.query);
+    const parsedId = id ? +id : undefined;
+    const parsedProjection: string[] = [];
+    if (projection) {
+      (projection as string)
+        .split(",")
+        .forEach((e) => e.length > 0 ? parsedProjection.push(e) : null);
+    }
+    const data = await getOrgsData(parsedProjection, parsedId);
+    res.json({
+      success: true,
+      data: data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get("/sign-in", injectSessionId, handleOrgSignIn);
 router.post("/sign-in-callback", handleOrgSignInCallback);
 router.post(
@@ -241,5 +267,6 @@ router.post(
   validateQuery("body", orgCreatePoeRequestSchema),
   handleOrgCreatePoe
 );
+router.get("/data", handleGetOrgsData);
 
 export default router;
