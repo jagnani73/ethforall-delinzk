@@ -171,17 +171,17 @@ export const PublicProfile = async (
 
 export const EmpProof = async (
   token: string,
-  employee_tenure: number,
-  organization_id: string
+  tenure: number,
+  orgId: string
 ): Promise<{
   qr: string;
   sessionId: string;
 }> => {
   const { data, headers } = await apiInstance.post(
-    "/user/proof",
+    "/user/add-poe",
     {
-      employee_tenure,
-      organization_id,
+      tenure,
+      orgId,
     },
     {
       headers: {
@@ -197,11 +197,11 @@ export const EmpProof = async (
 };
 
 export const EmpProofOrgs = async (): Promise<EmployeeProofOrg[]> => {
-  const { data } = await apiInstance.get("/orgs", {
+  const { data } = await apiInstance.get("/org/data", {
     params: {
       project: ["name", "id"].join(","),
     },
   });
 
-  return data.organizations;
+  return data.data;
 };

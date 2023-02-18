@@ -121,7 +121,7 @@ const EmployeeProof: React.FC<EmployeeProofProps> = ({ organizations }) => {
           "please try again"
         );
         const { qr, sessionId } = await proofPromise;
-        setQR(qr);
+        setQR(JSON.stringify(qr));
         setSessionId(sessionId);
       } catch (error) {
         console.error(error);
