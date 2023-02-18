@@ -38,7 +38,7 @@ const Home: React.FC = () => {
               <span className="z-10 group-hover:z-0 group-hover:text-slate-blue transition-all">
                 BUIDL
               </span>
-              ing an
+              ing a
             </span>
             <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-0 group-hover:z-10">
               <span className="z-0 group-hover:z-10 group-hover:text-slate-blue transition-all">
