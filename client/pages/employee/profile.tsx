@@ -37,6 +37,7 @@ const EmployeeProfilePage: NextPage = () => {
             width={160}
             alt="deLinZK | profile loader"
             src="/page-loader.gif"
+            unoptimized
           />
 
           <p className="font-bold mt-8 text-2xl">

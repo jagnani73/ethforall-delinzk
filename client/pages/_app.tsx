@@ -32,13 +32,14 @@ const App = ({ Component, pageProps }: AppProps) => {
 
       <Toaster />
 
-      {loading && (
+      {!loading && (
         <div className="w-full h-screen z-50 fixed flex items-center justify-center top-0 left-0 bg-transparent backdrop-blur">
           <Image
             height={200}
             width={200}
             alt="deLinZK | page loader"
             src="/page-loader.gif"
+            unoptimized
           />
         </div>
       )}
