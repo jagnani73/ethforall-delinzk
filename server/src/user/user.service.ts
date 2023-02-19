@@ -396,3 +396,25 @@ export const userGetApplications = async (userId: number) => {
   }
   return data;
 };
+
+export const getAllJobsByUser = async (applicationIds: string[]) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!.from("jobs").select(`
+  *,
+  org:orgs(id,name)
+  `);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  const parsedData = data.filter((job) => {
+    if (applicationIds.includes(job.id)) return false;
+    else return true;
+  });
+  return parsedData;
+};
