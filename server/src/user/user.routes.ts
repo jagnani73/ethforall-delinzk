@@ -5,6 +5,8 @@ import injectSessionId from "../middleware/session.middleware";
 import {
   addPoeRequest,
   addPoeRequestSchema,
+  applyJobRequest,
+  applyJobRequestSchema,
   userClaimPoeRequest,
   userClaimPoeRequestSchema,
   userSignUpRequest,
@@ -24,6 +26,7 @@ import {
   updateUserDetails,
   generateProofQr,
   storeProofOfEmployment,
+  userApplyJob,
 } from "./user.service";
 import { authVerify, generateClaimAuth } from "../org/org.service";
 import getRawBody from "raw-body";
@@ -287,6 +290,24 @@ const handleAddPoeCallback = async (
   }
 };
 
+const handleApplyJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, did } = res.locals.user;
+    const { jobId } = req.body as applyJobRequest;
+    const applicationId = await userApplyJob(+id, +jobId);
+    res.send({
+      success: true,
+      applicationId: applicationId,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get(
   "/claim-poe",
   validateQuery("query", userClaimPoeRequestSchema),
@@ -321,5 +342,12 @@ router.post(
   handleAddPoe
 );
 router.post("/add-poe-callback", handleAddPoeCallback);
+router.post(
+  "/apply-job",
+  verifyUser,
+  express.json(),
+  validateQuery("body", applyJobRequestSchema),
+  handleApplyJob
+);
 
 export default router;

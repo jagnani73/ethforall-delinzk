@@ -46,3 +46,9 @@ export const addPoeRequestSchema = yup.object({
 });
 
 export type addPoeRequest = yup.InferType<typeof addPoeRequestSchema>;
+
+export const applyJobRequestSchema = yup.object({
+  jobId: yup.number().required("jobId is required"),
+});
+
+export type applyJobRequest = yup.InferType<typeof applyJobRequestSchema>;

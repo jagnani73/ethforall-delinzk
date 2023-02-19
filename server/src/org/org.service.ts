@@ -473,3 +473,87 @@ export const getOrgsData = async (projection: string[], id?: number) => {
   }
   return data;
 };
+
+export const addJob = async (
+  orgId: number,
+  name: string,
+  description: string
+) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("jobs")
+    .insert({
+      org_id: orgId,
+      name: name,
+      description: description,
+    })
+    .select("id");
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data[0].id;
+};
+
+export const getOrgJobs = async (orgId: number) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!.from("jobs").select().eq("org_id", orgId);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data;
+};
+
+export const checkJobOwnership = async (orgId: number, jobId: number) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("jobs")
+    .select()
+    .eq("id", jobId)
+    .eq("org_id", orgId);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  if (data[0]) return true;
+  else return false;
+};
+
+export const getOrgJobApplications = async (jobId: number) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("job-applications")
+    .select(
+      `
+  *,
+  user:users(name,username,poes)
+  `
+    )
+    .eq("id", jobId);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data;
+};

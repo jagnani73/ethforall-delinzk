@@ -352,3 +352,24 @@ export const generateProofQr = async (
     .catch((err) => console.error(err));
   return request;
 };
+
+export const userApplyJob = async (userId: number, jobId: number) => {
+  const db = await SupabaseService.getSupabase();
+  const { data, error } = await db!
+    .from("job-applications")
+    .insert({
+      job_id: jobId,
+      user_id: userId,
+    })
+    .select("id");
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data[0].id;
+};

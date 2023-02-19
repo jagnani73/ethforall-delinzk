@@ -11,6 +11,7 @@ import adminRoutes from "./admin/admin.routes";
 import EmailService from "./services/email.service";
 import TokenService from "./services/token.service";
 import userRoutes from "./user/user.routes";
+import jobRoutes from "./jobs/jobs.routes"
 
 dotenvConfig();
 const app: Express = express();
@@ -20,6 +21,7 @@ app.use(cors());
 app.use("/api/v1/org", orgRoutes);
 app.use("/api/v1/admin", express.json(), adminRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/jobs", jobRoutes)
 app.get("/api/v1/healthcheck", (req: Request, res: Response) => {
   res.json({
     success: true,

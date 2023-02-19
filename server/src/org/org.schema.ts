@@ -40,3 +40,12 @@ export const orgCreatePoeRequestSchema = yup.object({
 export type orgCreatePoeRequest = yup.InferType<
   typeof orgCreatePoeRequestSchema
 >;
+
+export const orgCreateJobRequestSchema = yup.object({
+  name: yup.string().trim().required("name is required"),
+  description: yup.string().trim().required("description is required"),
+});
+
+export type orgCreateJobRequest = yup.InferType<
+  typeof orgCreateJobRequestSchema
+>;
