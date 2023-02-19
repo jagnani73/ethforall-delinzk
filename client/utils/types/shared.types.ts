@@ -108,6 +108,7 @@ export interface JobType {
 export interface JobProps {
   role: "employee" | "organization" | null;
   job: JobType;
+  handleApply?: (id: number) => Promise<void>;
 }
 
 export interface JobsProps {

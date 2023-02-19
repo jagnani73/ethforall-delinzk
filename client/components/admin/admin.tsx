@@ -248,7 +248,7 @@ const Admin: React.FC = () => {
                 )
               ) : (
                 <Message>
-                  <p className="text-2xl">No jobs listed</p>
+                  <p className="text-2xl">No organizations listed</p>
                 </Message>
               )}
             </div>

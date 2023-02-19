@@ -1,34 +1,13 @@
 import type { JobProps } from "@/utils/types/shared.types";
-import { useCallback } from "react";
 
 import { Button, Message, OrgDetails } from "@/components/shared";
 import { IndustryIcon } from "@/public/icons";
-import { EmpJobApply } from "@/utils/services/api";
-import { useAuth } from "@/utils/store/auth";
-import { PopPromiseToast } from "@/utils/functions";
 
 const Job: React.FC<JobProps> = ({
   job: { description, name, org, id },
   role,
+  handleApply,
 }) => {
-  const { JWE } = useAuth();
-
-  const applyHandler = useCallback(async () => {
-    try {
-      const applyPromise = EmpJobApply(JWE!, id);
-      PopPromiseToast(
-        applyPromise,
-        "applying...",
-        "applied",
-        "please try again"
-      );
-      await applyPromise;
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
-  }, [JWE, id]);
-
   return (
     <Message className="min-w-xl mt-0">
       <article className="w-full">
@@ -47,7 +26,7 @@ const Job: React.FC<JobProps> = ({
           <Button
             primary
             className="mx-auto flex px-6 mt-4"
-            onClick={applyHandler}
+            onClick={() => handleApply!(id)}
           >
             Apply
           </Button>

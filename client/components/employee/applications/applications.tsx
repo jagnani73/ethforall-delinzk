@@ -35,7 +35,7 @@ const EmployeeApplications: React.FC<EmployeeApplicationsProps> = ({
           )
         ) : (
           <Message>
-            <p className="text-2xl">No jobs listed</p>
+            <p className="text-2xl">No applications listed</p>
           </Message>
         )}
       </div>
