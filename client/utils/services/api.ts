@@ -248,7 +248,7 @@ export const FetchOrgJobApplicants = async (
   token: string,
   id: string
 ): Promise<OrganizationJobApplicantProps[]> => {
-  const { data } = await apiInstance.get(`/jobs/${id}`, {
+  const { data } = await apiInstance.get(`/org/jobs/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -258,7 +258,7 @@ export const FetchOrgJobApplicants = async (
 };
 
 export const FetchEmpJobs = async (token: string): Promise<JobType[]> => {
-  const { data } = await apiInstance.get("/jobs", {
+  const { data } = await apiInstance.get("/user/jobs", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -267,10 +267,13 @@ export const FetchEmpJobs = async (token: string): Promise<JobType[]> => {
   return data.jobs;
 };
 
-export const EmpJobApply = async (token: string): Promise<JobType[]> => {
+export const EmpJobApply = async (
+  token: string,
+  jobId: number
+): Promise<JobType[]> => {
   const { data } = await apiInstance.post(
     "/user/apply-job",
-    {},
+    { jobId },
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -41,7 +41,7 @@ const EmployeeApplicationsPage: NextPage = () => {
           />
 
           <p className="font-bold mt-8 text-2xl">
-            Cooking up 👨‍🍳 your profile...
+            Fetching your applications 🖋️...
           </p>
         </div>
       ) : (

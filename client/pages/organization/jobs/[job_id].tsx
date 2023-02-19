@@ -22,7 +22,9 @@ const OrganizationApplicationsPage: NextPage = () => {
     else
       (async () => {
         try {
-          setApplicants(await FetchOrgJobApplicants(JWE!, query.job_id));
+          setApplicants(
+            await FetchOrgJobApplicants(JWE!, query.job_id as string)
+          );
         } catch (error) {
           console.error(error);
         } finally {
@@ -44,7 +46,7 @@ const OrganizationApplicationsPage: NextPage = () => {
             unoptimized
           />
 
-          <p className="font-bold mt-8 text-2xl">Fetching Jobs...</p>
+          <p className="font-bold mt-8 text-2xl">Fetching applications 📜...</p>
         </div>
       ) : (
         <OrganizationJobApplicants applicants={applicants} />

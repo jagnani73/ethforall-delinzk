@@ -34,13 +34,13 @@ const Home: React.FC = () => {
       <div className="flex w-9/12 mx-auto h-full items-center">
         <div className="w-full flex flex-col h-full p-8 justify-center">
           <h1 className="group text-6xl flex flex-col h-40 whitespace-nowrap font-bold">
-            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-10 group-hover:z-0">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-10 group-hover:z-0 border-2 border-b-0 rounded-b-none border-slate-blue rounded-lg">
               <span className="z-10 group-hover:z-0 group-hover:text-slate-blue transition-all">
                 BUIDL
               </span>
               ing a
             </span>
-            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-0 group-hover:z-10">
+            <span className="bg-white effect-shadow w-fit p-2 group-hover:effect-shadow-hover z-0 group-hover:z-10 border-2 border-t-0 rounded-tl-none border-slate-blue rounded-lg">
               <span className="z-0 group-hover:z-10 group-hover:text-slate-blue transition-all">
                 V
               </span>

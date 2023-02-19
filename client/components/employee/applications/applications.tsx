@@ -6,7 +6,7 @@ const EmployeeApplications: React.FC<EmployeeApplicationsProps> = ({
 }) => {
   return (
     <div className="flex flex-col w-full h-full">
-      <h2 className="mt-12 text-4xl font-bold ml-8">Applicants</h2>
+      <h2 className="mt-12 text-4xl font-bold ml-8">Applications</h2>
 
       <div className="flex h-fit gap-x-16 m-auto w-full overflow-x-auto p-8">
         {applications.length ? (
@@ -18,10 +18,7 @@ const EmployeeApplications: React.FC<EmployeeApplicationsProps> = ({
                 org: { name: orgName },
               },
             }) => (
-              <Message
-                key={id}
-                className="w-fit whitespace-nowrap  px-4 py-2 mb-4"
-              >
+              <Message key={id} className="w-fit px-4 py-2 mt-0">
                 <div className="w-40">
                   <p className="text-slate-blue text-sm font-medium mt-4">
                     ORGANIZATION

@@ -47,6 +47,24 @@ const Topbar: React.FC = () => {
           ],
         };
       }
+      case "/employee/applications": {
+        return {
+          routes: [
+            {
+              content: "Jobs",
+              href: "/employee/jobs",
+            },
+            {
+              content: "Profile",
+              href: "/employee/profile",
+            },
+            {
+              content: "Logout",
+              href: "/",
+            },
+          ],
+        };
+      }
       case "/employee/claim": {
         return {
           prompt: "Don't have an account yet?",
@@ -135,12 +153,34 @@ const Topbar: React.FC = () => {
           ],
         };
       }
+      case "/organization/jobs": {
+        return {
+          routes: [
+            {
+              content: "Create Job",
+              href: "/organization/jobs/create",
+            },
+            {
+              content: "Offer PoE",
+              href: "/organization/claims",
+            },
+            {
+              content: "Logout",
+              href: "/",
+            },
+          ],
+        };
+      }
       case "/organization/claims": {
         return {
           routes: [
             {
               content: "Create Job",
               href: "/organization/jobs/create",
+            },
+            {
+              content: "Applicants",
+              href: "/organization/jobs",
             },
             {
               content: "Logout",
@@ -155,6 +195,10 @@ const Topbar: React.FC = () => {
             {
               content: "Offer PoE",
               href: "/organization/claims",
+            },
+            {
+              content: "Applicants",
+              href: "/organization/jobs/jobs",
             },
             {
               content: "Logout",

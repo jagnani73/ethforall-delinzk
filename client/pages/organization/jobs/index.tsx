@@ -2,13 +2,13 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import type { JobProps } from "@/utils/types/shared.types";
+import type { JobType } from "@/utils/types/shared.types";
 import { Jobs } from "@/components/shared";
 import { FetchOrgJobs } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
 
 const OrganizationJobsPage: NextPage = () => {
-  const [jobs, setJobs] = useState<JobProps[] | null>(null);
+  const [jobs, setJobs] = useState<JobType[] | null>(null);
 
   const { JWE } = useAuth();
 
@@ -38,7 +38,7 @@ const OrganizationJobsPage: NextPage = () => {
             unoptimized
           />
 
-          <p className="font-bold mt-8 text-2xl">Fetching Jobs...</p>
+          <p className="font-bold mt-8 text-2xl">Loading listed jobs 📜...</p>
         </div>
       ) : (
         <Jobs jobs={jobs} role={"organization"} />

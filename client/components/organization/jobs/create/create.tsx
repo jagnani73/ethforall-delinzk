@@ -95,14 +95,14 @@ const OrganizationJobsCreate: React.FC = () => {
           <Form className="w-96">
             <div className="text-center mb-8">
               <h3 className="font-medium text-4xl text-center mb-4">
-                Welcome!
+                Create a job post 👷
               </h3>
 
               <p className="text-onyx text-opacity-75">
-                We would love to know more about you and your vision 📔
+                Can you give more information about the job you're offering?
                 <br />
                 <span className="text-opacity-50 text-sm">
-                  (so will the future mission leaders)
+                  (it's for the applicants actually)
                 </span>
               </p>
             </div>
@@ -124,7 +124,7 @@ const OrganizationJobsCreate: React.FC = () => {
             </div>
 
             <Button primary type="submit" className="w-full mt-8">
-              Create Job
+              Start hiring 💼
             </Button>
           </Form>
         )}

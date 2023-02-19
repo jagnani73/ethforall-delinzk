@@ -7,12 +7,15 @@ import { EmpJobApply } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
 import { PopPromiseToast } from "@/utils/functions";
 
-const Job: React.FC<JobProps> = ({ job: { description, name, org }, role }) => {
+const Job: React.FC<JobProps> = ({
+  job: { description, name, org, id },
+  role,
+}) => {
   const { JWE } = useAuth();
 
   const applyHandler = useCallback(async () => {
     try {
-      const applyPromise = EmpJobApply(JWE!);
+      const applyPromise = EmpJobApply(JWE!, id);
       PopPromiseToast(
         applyPromise,
         "applying...",
@@ -24,7 +27,7 @@ const Job: React.FC<JobProps> = ({ job: { description, name, org }, role }) => {
       console.error(error);
     } finally {
     }
-  }, [JWE]);
+  }, [JWE, id]);
 
   return (
     <Message className="min-w-xl mt-0">
