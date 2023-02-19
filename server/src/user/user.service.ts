@@ -371,6 +371,53 @@ export const userApplyJob = async (userId: number, jobId: number) => {
     };
     throw err;
   }
+  Promise.all([
+    (async () => {
+      const db = await SupabaseService.getSupabase();
+      const { data: data1, error: error1 } = await db!
+        .from("users")
+        .select("email")
+        .eq("id", userId);
+      if (error1) {
+        const err = {
+          errorCode: 500,
+          name: "Database Error",
+          message: "Supabase database called failed",
+          databaseError: error1,
+        };
+        throw err;
+      }
+      const { data: data2, error: error2 } = await db!
+        .from("jobs")
+        .select(
+          `
+        name,
+        org:orgs(name)
+        `
+        )
+        .eq("id", jobId);
+      if (error2) {
+        const err = {
+          errorCode: 500,
+          name: "Database Error",
+          message: "Supabase database called failed",
+          databaseError: error2,
+        };
+        throw err;
+      }
+      const rawEmail = await EmailService.generateEmail(
+        "job-application-success",
+        data1[0].email,
+        "Hello there, hustler 🧑‍💻! You've successfully applied for a job 🔥",
+        {
+          jobName: data2[0].name,
+          orgName: (data2[0].org as { name: any }).name,
+        },
+        []
+      );
+      await EmailService.sendEmail(data1[0].email, rawEmail);
+    })(),
+  ]).catch((e) => console.error(e));
   return data[0].id;
 };
 
