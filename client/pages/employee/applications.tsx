@@ -2,13 +2,15 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import type { EmployeeType } from "@/utils/types/employee.types";
-import { Profile } from "@/components/shared";
+import type { EmployeeApplicationProps } from "@/utils/types/employee.types";
+import { EmployeeApplications } from "@/components/employee/applications";
 import { useAuth } from "@/utils/store/auth";
-import { EmpProfile } from "@/utils/services/api";
+import { EmpApplications } from "@/utils/services/api";
 
-const EmployeeProfilePage: NextPage = () => {
-  const [employee, setEmployee] = useState<EmployeeType | null>(null);
+const EmployeeApplicationsPage: NextPage = () => {
+  const [applications, setApplications] = useState<
+    EmployeeApplicationProps[] | null
+  >(null);
 
   const { JWE } = useAuth();
 
@@ -16,7 +18,7 @@ const EmployeeProfilePage: NextPage = () => {
     if (JWE)
       (async () => {
         try {
-          setEmployee(await EmpProfile(JWE!));
+          setApplications(await EmpApplications(JWE!));
         } catch (error) {
           console.error(error);
         } finally {
@@ -28,7 +30,7 @@ const EmployeeProfilePage: NextPage = () => {
 
   return (
     <>
-      {!employee ? (
+      {!applications ? (
         <div className="flex flex-col items-center justify-center w-full">
           <Image
             height={160}
@@ -39,14 +41,14 @@ const EmployeeProfilePage: NextPage = () => {
           />
 
           <p className="font-bold mt-8 text-2xl">
-            Cooking up your profile 👨‍🍳...
+            Fetching your applications 🖋️...
           </p>
         </div>
       ) : (
-        <Profile employee={employee} publicProfile={false} />
+        <EmployeeApplications applications={applications} />
       )}
     </>
   );
 };
 
-export default EmployeeProfilePage;
+export default EmployeeApplicationsPage;

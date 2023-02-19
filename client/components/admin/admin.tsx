@@ -247,7 +247,9 @@ const Admin: React.FC = () => {
                   )
                 )
               ) : (
-                <>No pending approvals</>
+                <Message>
+                  <p className="text-2xl">No jobs listed</p>
+                </Message>
               )}
             </div>
           </div>

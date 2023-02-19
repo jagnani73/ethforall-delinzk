@@ -2,13 +2,13 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import type { EmployeeType } from "@/utils/types/employee.types";
-import { Profile } from "@/components/shared";
+import type { JobType } from "@/utils/types/shared.types";
+import { Jobs } from "@/components/shared";
+import { FetchEmpJobs } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
-import { EmpProfile } from "@/utils/services/api";
 
-const EmployeeProfilePage: NextPage = () => {
-  const [employee, setEmployee] = useState<EmployeeType | null>(null);
+const EmployeeJobsPage: NextPage = () => {
+  const [jobs, setJobs] = useState<JobType[] | null>(null);
 
   const { JWE } = useAuth();
 
@@ -16,7 +16,7 @@ const EmployeeProfilePage: NextPage = () => {
     if (JWE)
       (async () => {
         try {
-          setEmployee(await EmpProfile(JWE!));
+          setJobs(await FetchEmpJobs(JWE!));
         } catch (error) {
           console.error(error);
         } finally {
@@ -28,7 +28,7 @@ const EmployeeProfilePage: NextPage = () => {
 
   return (
     <>
-      {!employee ? (
+      {!jobs ? (
         <div className="flex flex-col items-center justify-center w-full">
           <Image
             height={160}
@@ -39,14 +39,14 @@ const EmployeeProfilePage: NextPage = () => {
           />
 
           <p className="font-bold mt-8 text-2xl">
-            Cooking up your profile 👨‍🍳...
+            Looking up new opportunities 🔎...
           </p>
         </div>
       ) : (
-        <Profile employee={employee} publicProfile={false} />
+        <Jobs jobs={jobs} role={"employee"} />
       )}
     </>
   );
 };
 
-export default EmployeeProfilePage;
+export default EmployeeJobsPage;
