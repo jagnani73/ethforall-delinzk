@@ -23,6 +23,8 @@ During the creation of this platform, [`@iden3/js-iden3-auth`](https://github.co
 
 **But,** we are actively working on it! Track our progress here ✨ [**#38**](https://github.com/jagnani73/ethforall-delinzk/issues/38)
 
+<div align="center"><br /><br /><h1><b>Video Demo 📼: <a href="https://youtu.be/juNUuhQXA-U" target="_blank">HERE</a></b></h1></div><br />
+
 # 💡 **Problem Statement**
 
 The problem with the current networking platforms are that there is no surety in the work experience which users claim to have. The users can also fake their way through, having forged certificates or even having certificates from pseudo-companies, which do not even exist. This is why recruiters resort to using different B2B credential verifiers, which not only charge an absurd amount of money, but also extract a lot of PII (Personal Identifiable Information) from the applicants who apply to these organizations.
