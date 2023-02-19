@@ -17,11 +17,13 @@ Team <b>DreamTeam</b> present <b>deLinZK</b>.
   Built with ❤️, delivered on ☕, verified by <a href="https://polygonid.com" target="_blank"><b>Polygon 🆔</b></a> <span>☕</span> at <a href="https://ethforall.devfolio.co/">ETHForAll Online VIII</a>.
 </blockquote>
 
-# ⚠️ **DISCLAIMER:** Please note that this platform is not compatible with Polygon ID mobile application version 2.0
+# ⚠️ **DISCLAIMER:** The web application is compatible with PolygonID mobile app v1.0.3
 
-During the creation of this platform,
+During the creation of this platform, [`@iden3/js-iden3-auth`](https://github.com/iden3/js-iden3-auth/tree/v0.1.6) was in `v0.1.6`, and PolygonID mobile app was at `v1.0.3`. Due to the recent changes in Iden3 circuits, and Polygon ID mobile app shifting from a custom claim format to a W3C Verifiable Credentials, the web application is incompatible in recent times.
 
-# 💡 Problem Statement
+**But,** we are actively working on it! Track our progress here ✨ [**#38**](https://github.com/jagnani73/ethforall-delinzk/issues/38)
+
+# 💡 **Problem Statement**
 
 The problem with the current networking platform is that it allows individuals to register under an organization, claiming a specific tenure without any platform verification or proof from the said organization. This lack of validation leads to inaccurate and misleading information being presented on the platform, making it difficult for users to trust the platform and make informed decisions based on the information available.
 
