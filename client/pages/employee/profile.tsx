@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
 
 import type { EmployeeType } from "@/utils/types/employee.types";
@@ -10,12 +9,10 @@ import { EmpProfile } from "@/utils/services/api";
 
 const EmployeeProfilePage: NextPage = () => {
   const [employee, setEmployee] = useState<EmployeeType | null>(null);
-  const { replace } = useRouter();
   const { JWE } = useAuth();
 
   useEffect(() => {
-    if (!JWE) replace("/404");
-    else
+    if (JWE)
       (async () => {
         try {
           setEmployee(await EmpProfile(JWE!));

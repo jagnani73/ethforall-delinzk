@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Toaster } from "react-hot-toast";
 
 import "@/styles/globals.css";
-import { Layout } from "@/components/shared";
+import { Authorization, Layout } from "@/components/shared";
 import { AuthProvider } from "@/utils/store/auth";
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -45,6 +45,8 @@ const App = ({ Component, pageProps }: AppProps) => {
       )}
 
       <AuthProvider>
+        <Authorization />
+
         <Layout>
           <Component {...pageProps} />
         </Layout>

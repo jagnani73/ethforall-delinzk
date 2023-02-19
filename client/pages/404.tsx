@@ -8,7 +8,7 @@ const NotFound: NextPage = () => {
     <Message>
       <div className="text-center p-6">
         <h1 className="text-5xl font-bold">4 · O · 4</h1>
-        <h3 className="my-8 text-lg">
+        <h3 className="my-8 text-xl">
           Looks like you are living the nomad life
         </h3>
 

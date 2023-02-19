@@ -6,3 +6,4 @@ export { default as Message } from "./message";
 export { default as QRPage } from "./qr-page";
 export { default as Profile } from "./profile";
 export { default as OrgDetails } from "./org-details";
+export { default as Authorization } from "./authorization";
