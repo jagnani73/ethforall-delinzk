@@ -20,12 +20,18 @@ import {
   sendClaimOfferEmail,
   sendOrganizationSignupCompleteEmail,
   getOrgsData,
+  addJob,
+  getOrgJobs,
+  checkJobOwnership,
+  getOrgJobApplications,
 } from "./org.service";
 import { parseLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
 import {
   orgApproveRequest,
   orgApproveRequestSchema,
+  orgCreateJobRequest,
+  orgCreateJobRequestSchema,
   orgCreatePoeRequest,
   orgCreatePoeRequestSchema,
   orgSignUpCompleteRequest,
@@ -194,7 +200,7 @@ const handleOrgCreatePoe = async (
       {
         attributeKey: "poeHash",
         attributeValue: poeHash,
-      }
+      },
     ];
     const claimOfferId = await generateClaimOffer(
       process.env.POLYGONID_CLAIMSCHEMAID_PROOF_OF_EMPLOYMENT!,
@@ -234,6 +240,66 @@ const handleGetOrgsData = async (
   }
 };
 
+const handleOrgCreateJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, did } = res.locals.org;
+    const { name, description } = req.body as orgCreateJobRequest;
+    const jobId = await addJob(+id, name, description);
+    res.json({
+      success: true,
+      jobId: jobId,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleOrgGetJobs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, did } = res.locals.org;
+    const jobs = await getOrgJobs(+id);
+    res.json({
+      success: true,
+      jobs: jobs,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleOrgGetJobApplications = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, did } = res.locals.org;
+    const { jobId } = req.params;
+    const jobOwned = await checkJobOwnership(+id, +jobId);
+    if (!jobOwned) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found!",
+      });
+    }
+    const applications = await getOrgJobApplications(+jobId);
+    res.json({
+      success: true,
+      applications: applications,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get("/sign-in", injectSessionId, handleOrgSignIn);
 router.post("/sign-in-callback", handleOrgSignInCallback);
 router.post(
@@ -265,5 +331,14 @@ router.post(
   handleOrgCreatePoe
 );
 router.get("/data", handleGetOrgsData);
+router.post(
+  "/create-job",
+  verifyOrg,
+  express.json(),
+  validateQuery("body", orgCreateJobRequestSchema),
+  handleOrgCreateJob
+);
+router.get("/jobs", verifyOrg, handleOrgGetJobs);
+router.get("/jobs/:jobId", verifyOrg, handleOrgGetJobApplications);
 
 export default router;
