@@ -3,6 +3,8 @@ import axios from "axios";
 
 import type { AdminOrg } from "../types/admin.types";
 import type { EmployeeProofOrg, EmployeeType } from "../types/employee.types";
+import type { OrganizationJobApplicantProps } from "../types/organization.types";
+import type { JobProps } from "../types/shared.types";
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `https://${process.env.NEXT_PUBLIC_API_HOSTNAME!}/api/v1`,
@@ -220,4 +222,33 @@ export const OrgCreateJob = async (
   });
 
   return;
+};
+
+export const FetchJobs = async (): Promise<JobProps[]> => {
+  const { data } = await apiInstance.get("/jobs");
+
+  return data.jobs;
+};
+
+export const FetchOrgJobs = async (token: string): Promise<JobProps[]> => {
+  const { data } = await apiInstance.get("/jobs", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data.jobs;
+};
+
+export const FetchOrgJobApplicants = async (
+  token: string,
+  id: string
+): Promise<OrganizationJobApplicantProps[]> => {
+  const { data } = await apiInstance.get(`/jobs/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data.applications;
 };

@@ -99,11 +99,14 @@ export interface JobProps {
   id: number;
   name: string;
   description: string;
-  orgName: string;
+  org: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface JobsProps {
-  role: "employee" | "organization" | null;
+  role: "organization" | null;
   jobs: JobProps[];
 }
 

@@ -12,6 +12,7 @@ const Authorization: React.FC = () => {
     () => [
       "/employee/profile",
       "/organization/claims",
+      "/organization/jobs",
       "/organization/jobs/create",
     ],
     []
