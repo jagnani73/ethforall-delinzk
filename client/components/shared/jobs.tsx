@@ -13,10 +13,10 @@ const Jobs: React.FC<JobsProps> = ({ jobs, role }) => {
           jobs.map((job) =>
             role === "organization" ? (
               <Link key={job.id} href={`organization/jobs/${job.id}`}>
-                <Job {...job} />
+                <Job job={job} role={role} />
               </Link>
             ) : (
-              <Job key={job.id} {...job} />
+              <Job key={job.id} job={job} role={role} />
             )
           )
         ) : (

@@ -11,6 +11,8 @@ const Authorization: React.FC = () => {
   const AUTHORIZED_ROUTES = useMemo<string[]>(
     () => [
       "/employee/profile",
+      "/employee/jobs",
+      "/employee/applications",
       "/organization/claims",
       "/organization/jobs",
       "/organization/jobs/create",

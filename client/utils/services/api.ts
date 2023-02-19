@@ -2,9 +2,13 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 
 import type { AdminOrg } from "../types/admin.types";
-import type { EmployeeProofOrg, EmployeeType } from "../types/employee.types";
+import type {
+  EmployeeApplicationProps,
+  EmployeeProofOrg,
+  EmployeeType,
+} from "../types/employee.types";
 import type { OrganizationJobApplicantProps } from "../types/organization.types";
-import type { JobProps } from "../types/shared.types";
+import type { JobType } from "../types/shared.types";
 
 const apiInstance: AxiosInstance = axios.create({
   baseURL: `https://${process.env.NEXT_PUBLIC_API_HOSTNAME!}/api/v1`,
@@ -224,13 +228,13 @@ export const OrgCreateJob = async (
   return;
 };
 
-export const FetchJobs = async (): Promise<JobProps[]> => {
+export const FetchJobs = async (): Promise<JobType[]> => {
   const { data } = await apiInstance.get("/jobs");
 
   return data.jobs;
 };
 
-export const FetchOrgJobs = async (token: string): Promise<JobProps[]> => {
+export const FetchOrgJobs = async (token: string): Promise<JobType[]> => {
   const { data } = await apiInstance.get("/jobs", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -245,6 +249,42 @@ export const FetchOrgJobApplicants = async (
   id: string
 ): Promise<OrganizationJobApplicantProps[]> => {
   const { data } = await apiInstance.get(`/jobs/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data.applications;
+};
+
+export const FetchEmpJobs = async (token: string): Promise<JobType[]> => {
+  const { data } = await apiInstance.get("/jobs", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data.jobs;
+};
+
+export const EmpJobApply = async (token: string): Promise<JobType[]> => {
+  const { data } = await apiInstance.post(
+    "/user/apply-job",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return data.jobs;
+};
+
+export const EmpApplications = async (
+  token: string
+): Promise<EmployeeApplicationProps[]> => {
+  const { data } = await apiInstance.get("/user/applied-jobs", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { Message } from "@/components/shared";
 import type { OrganizationJobApplicantsProps } from "@/utils/types/organization.types";
+import { Message } from "@/components/shared";
 
 const OrganizationJobApplicants: React.FC<OrganizationJobApplicantsProps> = ({
   applicants,

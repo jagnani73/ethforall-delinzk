@@ -95,7 +95,7 @@ export interface ProfileProps {
   employee: EmployeeType;
 }
 
-export interface JobProps {
+export interface JobType {
   id: number;
   name: string;
   description: string;
@@ -105,11 +105,12 @@ export interface JobProps {
   };
 }
 
-export interface JobsProps {
-  role: "organization" | null;
-  jobs: JobProps[];
+export interface JobProps {
+  role: "employee" | "organization" | null;
+  job: JobType;
 }
 
-export interface JobsPageProps {
-  jobs: JobProps[];
+export interface JobsProps {
+  role: "employee" | "organization" | null;
+  jobs: JobType[];
 }

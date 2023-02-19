@@ -29,6 +29,24 @@ const Topbar: React.FC = () => {
         };
       }
 
+      case "/employee/jobs": {
+        return {
+          routes: [
+            {
+              content: "Applications",
+              href: "/employee/applications",
+            },
+            {
+              content: "Profile",
+              href: "/employee/profile",
+            },
+            {
+              content: "Logout",
+              href: "/",
+            },
+          ],
+        };
+      }
       case "/employee/claim": {
         return {
           prompt: "Don't have an account yet?",
@@ -44,8 +62,12 @@ const Topbar: React.FC = () => {
         return {
           routes: [
             {
-              content: "Add a PoE",
-              href: "/employee/proof",
+              content: "Jobs",
+              href: "/employee/jobs",
+            },
+            {
+              content: "Applications",
+              href: "/employee/applications",
             },
             {
               content: "Logout",
@@ -57,6 +79,10 @@ const Topbar: React.FC = () => {
       case "/employee/proof": {
         return {
           routes: [
+            {
+              content: "Jobs",
+              href: "/employee/jobs",
+            },
             {
               content: "Profile",
               href: "/employee/profile",
@@ -89,16 +115,6 @@ const Topbar: React.FC = () => {
         };
       }
 
-      case "/organization/claims": {
-        return {
-          routes: [
-            {
-              content: "Create Job",
-              href: "/organization/jobs/create",
-            },
-          ],
-        };
-      }
       case "/organization/signin": {
         return {
           routes: [
@@ -119,12 +135,30 @@ const Topbar: React.FC = () => {
           ],
         };
       }
+      case "/organization/claims": {
+        return {
+          routes: [
+            {
+              content: "Create Job",
+              href: "/organization/jobs/create",
+            },
+            {
+              content: "Logout",
+              href: "/",
+            },
+          ],
+        };
+      }
       case "/organization/jobs/create": {
         return {
           routes: [
             {
               content: "Offer PoE",
               href: "/organization/claims",
+            },
+            {
+              content: "Logout",
+              href: "/",
             },
           ],
         };

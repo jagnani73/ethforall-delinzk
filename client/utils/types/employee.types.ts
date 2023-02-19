@@ -56,3 +56,20 @@ export interface EmployeeProofPageProps {
 export interface EmployeeProofProps {
   organizations: EmployeeProofOrg[];
 }
+
+export interface EmployeeApplicationProps {
+  id: number;
+  job: {
+    name: string;
+    org: {
+      name: string;
+    };
+  };
+}
+export interface EmployeeApplicationsProps {
+  applications: EmployeeApplicationProps[];
+}
+
+export interface EmployeeApplicationsPageProps {
+  applications: EmployeeApplicationProps[];
+}
