@@ -7,3 +7,4 @@ export { default as QRPage } from "./qr-page";
 export { default as Profile } from "./profile";
 export { default as OrgDetails } from "./org-details";
 export { default as Authorization } from "./authorization";
+export { default as Jobs } from "./jobs";

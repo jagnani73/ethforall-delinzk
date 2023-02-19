@@ -94,3 +94,19 @@ export interface ProfileProps {
   publicProfile: boolean;
   employee: EmployeeType;
 }
+
+export interface JobProps {
+  id: number;
+  name: string;
+  description: string;
+  orgName: string;
+}
+
+export interface JobsProps {
+  role: "employee" | "organization" | null;
+  jobs: JobProps[];
+}
+
+export interface JobsPageProps {
+  jobs: JobProps[];
+}
