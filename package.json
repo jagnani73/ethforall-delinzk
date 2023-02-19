@@ -12,7 +12,8 @@
     "build": "yarn build:server  && yarn build:client",
     "prettier:fix": "npx prettier --write .",
     "prettier:check": "npx prettier --check .",
-    "production:server": "cd server && yarn start"
+    "production:server": "cd server && yarn start",
+    "production:client": "cd client && yarn start"
   },
   "dependencies": {
     "prettier": "^2.8.4"
