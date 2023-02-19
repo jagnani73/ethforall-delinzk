@@ -27,34 +27,53 @@ During the creation of this platform, [`@iden3/js-iden3-auth`](https://github.co
 
 The problem with the current networking platform is that it allows individuals to register under an organization, claiming a specific tenure without any platform verification or proof from the said organization. This lack of validation leads to inaccurate and misleading information being presented on the platform, making it difficult for users to trust the platform and make informed decisions based on the information available.
 
-# 🧠 Knowledge Primer
+# 🧠 **Knowledge Primer**
 
 - An _Employee_ is an individual who is working, or has worked for an organization.
 - An _Organization_ is an entity that is either looking for an _Employee_ or has some employed.
 - An _Admin_ is an envoy of **deLinZK**.
 
-# 📺 Preview
+# 💪 **Challenges Faced (and WAGMI!)**
 
+- Lorem
+- Lorem
+
+# 📺 **Preview**
 <div align="center">
-  <img alt="Preview Images" src="docs/preview1.png" />
+<div align="center">
+<h2><b>Home Screen 🏠</b></h2>
+  <img alt="Preview Images" src="./client/public/preview-0.png" />
+</div>
+<h2><b>Claim Schemas 📜</b></h2>
+
+| ![Preview 1.1](./client/public/preview-1-1.png) | ![Preview 1.2](./client/public/preview-1-2.png) |
+| ----------------------------------------------- | ----------------------------------------------- |
+
+<small><b>Left: Claim schema for Proof-of-Employment, Right: Claim schema for Verified Organization</b></small>
+
 </div>
 <div align="center">
-  <img alt="Preview Images" src="docs/preview2.png" />
+<h2><b>Organization Creating Proof-of-Employment 🛠️</b></h2>
+  <img alt="Preview Images" src="./client/public/preview-2.png" />
 </div>
 <div align="center">
+<h2><b>Employee Claiming the Proof-of-Employment 👑</b></h2>
   <img alt="Preview Images" src="docs/preview3.png" />
 </div>
 <div align="center">
+  <h2><b>Employee Profile Page 🫂</b></h2>
   <img alt="Preview Images" src="docs/preview4.png" />
 </div>
 <div align="center">
+  <h2><b>Employee Adding new Proof-of-Employments</b></h2>
   <img alt="Preview Images" src="docs/preview5.png" />
 </div>
 <div align="center">
+<h2><b>Organization Creating Proof-of-Employment 🛠️</b></h2>
   <img alt="Preview Images" src="docs/preview6.png" />
 </div>
 
-# 💻 Tech Stack
+# 💻 **Tech Stack**
 
 - PolygonID
 - Supabase
@@ -67,7 +86,7 @@ The problem with the current networking platform is that it allows individuals t
 - TypeScript
 - Redis
 
-# 📦 Inside the box
+# 📦 **Inside the box**
 
 deLinZK is a platform that specializes in providing advanced verification services to organizations and their employees. The platform uses Zero-Knowledge Proofs using PolygonID and its Self-Sovereign Identity policies to allow
 
@@ -76,9 +95,9 @@ deLinZK is a platform that specializes in providing advanced verification servic
 
 deLinZK acts as an issuer of the claims made by an organization for them being verified on deLinZK and a verifier of the claims made by an employee for their tenure at an organization. This ensures a more reliable and **trusted networking** application.
 
-## 1. System Architecture Diagram
+## 1. **System Architecture Diagram**
 
-# ⏭️ What's next
+# ⏭️ **What's next for deLinZK?**
 
 - Add more types of nudges, with more customizing options
 - Dynamic drag and drop to get IDs of elements
@@ -87,21 +106,21 @@ deLinZK acts as an issuer of the claims made by an organization for them being v
 - Adding support for more platforms
 - Adding user specific nudges
 
-# 📜 License
+# 📜 **License**
 
-`NudgeLab` is available under the MIT license. See the [`LICENSE`](./LICENSE) file for more info.
+`deLinZK` is available under the MIT license. See the [`LICENSE`](./LICENSE) file for more info.
 
-# 🤝 Contributing
+# 🤝 **Contributing**
 
 Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-# 💥 Contributors
+# 💥 **Contributors**
 
 <a href="https://github.com/jagnani73/ethforall-delinzk/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=jagnani73/ethforall-delinzk" alt="Contributors">
 </a>
                                                                                   
-# 🚨 Forking this repo
+# 🚨 **Forking this repo**
 
 Many people have contacted us asking if they can use this code for their own websites. The answer to that question is usually "yes", with attribution. There are some cases, such as using this code for a business or something that is greater than a personal project, that we may be less comfortable saying yes to. If in doubt, please don't hesitate to ask us.
 

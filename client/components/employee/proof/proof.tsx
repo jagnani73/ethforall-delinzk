@@ -150,7 +150,7 @@ const EmployeeProof: React.FC<EmployeeProofProps> = ({ organizations }) => {
             {({ errors, touched }) => (
               <Form className="w-96">
                 <h2 className="text-4xl font-bold">
-                  <span className="text-slate-blue">1/2</span> Generate
+                  <span className="text-slate-blue">1/2</span> Verify
                   Proof-of-Employment ⚙️
                 </h2>
 
