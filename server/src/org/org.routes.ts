@@ -35,6 +35,7 @@ import {
 } from "./org.schema";
 import verifyAdmin from "../middleware/verify-admin.middleware";
 import verifyOrg from "../middleware/verify-org.middleware";
+import KeyServices from "../services/key.service";
 
 const router = Router();
 
@@ -188,15 +189,12 @@ const handleOrgCreatePoe = async (
     const { employee_email: email, employee_tenure: tenure } =
       req.body as orgCreatePoeRequest;
     const { id, did } = res.locals.org;
+    const poeHash = KeyServices.createPoeHashKey(tenure, id);
     const attributes: Attributes = [
       {
-        attributeKey: "deLinZK Organization ID",
-        attributeValue: id,
-      },
-      {
-        attributeKey: "Tenure",
-        attributeValue: +tenure,
-      },
+        attributeKey: "poeHash",
+        attributeValue: poeHash,
+      }
     ];
     const claimOfferId = await generateClaimOffer(
       process.env.POLYGONID_CLAIMSCHEMAID_PROOF_OF_EMPLOYMENT!,
@@ -224,7 +222,7 @@ const handleGetOrgsData = async (
     if (projection) {
       (projection as string)
         .split(",")
-        .forEach((e) => e.length > 0 ? parsedProjection.push(e) : null);
+        .forEach((e) => (e.length > 0 ? parsedProjection.push(e) : null));
     }
     const data = await getOrgsData(parsedProjection, parsedId);
     res.json({

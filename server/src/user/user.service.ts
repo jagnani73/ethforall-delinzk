@@ -6,6 +6,7 @@ import TunnelService from "../services/tunnel.service";
 import { auth, protocol } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
+import KeyServices from "../services/key.service";
 
 export interface UpdateUserData {
   about: string;
@@ -301,37 +302,24 @@ export const generateProofQr = async (
   request.thid = requestId;
   console.log("Request ID set as:", requestId);
 
-  //! ERROR: Need to resolve multiple queries in Iden3 circuits
+  const poeHash = KeyServices.createPoeHashKey(tenure, orgId);
+
   const proofRequest: protocol.ZKPRequest = {
     id: 1,
-    circuit_id: "credentialAtomicQueryMTP",
+    circuit_id: "credentialAtomicQuerySig",
     rules: {
-      query: [
-        {
-          allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
-          schema: {
-            type: "deLinZK Proof-of-Employment",
-            url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/347bf7b1-a278-49eb-9e08-40b32fbe73b6.json-ld",
-          },
-          req: {
-            "deLinZK Organization ID": {
-              $eq: orgId,
-            },
+      query: {
+        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
+        schema: {
+          type: "deLinZK Proof-of-Employment",
+          url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/77ea9cef-ebf0-4a71-9f49-d9fa7f4c6711.json-ld",
+        },
+        req: {
+          poeHash: {
+            $eq: poeHash,
           },
         },
-        {
-          allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
-          schema: {
-            type: "deLinZK Proof-of-Employment",
-            url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/347bf7b1-a278-49eb-9e08-40b32fbe73b6.json-ld",
-          },
-          req: {
-            Tenure: {
-              $eq: tenure,
-            },
-          },
-        },
-      ],
+      },
     },
   };
   const scope = request.body.scope ?? [];
