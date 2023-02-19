@@ -19,6 +19,7 @@ import {
   storeClaimOffer,
   sendClaimOfferEmail,
   sendOrganizationSignupCompleteEmail,
+  getOrgsData,
 } from "./org.service";
 import { parseLicense } from "../middleware/multer.middleware";
 import validateQuery from "../middleware/verify-query.middleware";
@@ -34,6 +35,7 @@ import {
 } from "./org.schema";
 import verifyAdmin from "../middleware/verify-admin.middleware";
 import verifyOrg from "../middleware/verify-org.middleware";
+import KeyServices from "../services/key.service";
 
 const router = Router();
 
@@ -187,15 +189,12 @@ const handleOrgCreatePoe = async (
     const { employee_email: email, employee_tenure: tenure } =
       req.body as orgCreatePoeRequest;
     const { id, did } = res.locals.org;
+    const poeHash = KeyServices.createPoeHashKey(tenure, id);
     const attributes: Attributes = [
       {
-        attributeKey: "deLinZK Organization ID",
-        attributeValue: id,
-      },
-      {
-        attributeKey: "Tenure",
-        attributeValue: +tenure,
-      },
+        attributeKey: "poeHash",
+        attributeValue: poeHash,
+      }
     ];
     const claimOfferId = await generateClaimOffer(
       process.env.POLYGONID_CLAIMSCHEMAID_PROOF_OF_EMPLOYMENT!,
@@ -205,6 +204,30 @@ const handleOrgCreatePoe = async (
     await sendClaimOfferEmail(email, reqId);
     res.json({
       success: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const handleGetOrgsData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, projection } = req.query;
+    const parsedId = id ? +id : undefined;
+    const parsedProjection: string[] = [];
+    if (projection) {
+      (projection as string)
+        .split(",")
+        .forEach((e) => (e.length > 0 ? parsedProjection.push(e) : null));
+    }
+    const data = await getOrgsData(parsedProjection, parsedId);
+    res.json({
+      success: true,
+      data: data,
     });
   } catch (err) {
     next(err);
@@ -241,5 +264,6 @@ router.post(
   validateQuery("body", orgCreatePoeRequestSchema),
   handleOrgCreatePoe
 );
+router.get("/data", handleGetOrgsData);
 
 export default router;

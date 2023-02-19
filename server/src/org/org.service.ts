@@ -1,6 +1,6 @@
 import { auth, protocol, loaders, resolver } from "@iden3/js-iden3-auth";
 import { v4 } from "uuid";
-import { join } from "path";
+import { join, parse } from "path";
 import axios from "axios";
 
 import TunnelService from "../services/tunnel.service";
@@ -445,4 +445,31 @@ export const sendOrganizationSignupCompleteEmail = async (orgId: number) => {
     []
   );
   await EmailService?.sendEmail(email, rawEmail);
+};
+
+export const getOrgsData = async (projection: string[], id?: number) => {
+  let parsedProjection = "";
+  if (projection?.length > 0) {
+    parsedProjection = projection.reduce(
+      (prev, current) => prev + "," + current
+    );
+  } else {
+    parsedProjection = "*";
+  }
+  const db = await SupabaseService.getSupabase();
+  let query = db!.from("orgs").select(parsedProjection);
+  if (id) {
+    query = query.eq("id", id);
+  }
+  const { data, error } = await query;
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  return data;
 };

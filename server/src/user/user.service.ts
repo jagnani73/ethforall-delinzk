@@ -3,14 +3,23 @@ import SocketService from "../services/socket.service";
 import { checkClaimStatus } from "../org/org.service";
 import { v4 } from "uuid";
 import TunnelService from "../services/tunnel.service";
-import { auth } from "@iden3/js-iden3-auth";
+import { auth, protocol } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
+import KeyServices from "../services/key.service";
 
 export interface UpdateUserData {
   about: string;
   name: string;
   industry: string;
+}
+
+export interface proofOfEmploymentCache {
+  id: number;
+  proof: {
+    orgName: string;
+    tenure: number;
+  };
 }
 
 export interface UserData extends UpdateUserData {
@@ -161,8 +170,9 @@ export const fetchUserPublicDetails = async (username: string) => {
     };
     throw err;
   }
-
-  return data[0];
+  const parsedData = data[0];
+  parsedData.poes = parsedData.poes.map((poe: string) => JSON.parse(poe));
+  return parsedData;
 };
 
 export const fetchUserPrivateDetails = async (did: string) => {
@@ -177,7 +187,9 @@ export const fetchUserPrivateDetails = async (did: string) => {
     };
     throw err;
   }
-  return data[0];
+  const parsedData = data[0];
+  parsedData.poes = parsedData.poes.map((poe: string) => JSON.parse(poe));
+  return parsedData;
 };
 
 export const sendUserSignupCompleteEmail = async (email: string) => {
@@ -189,4 +201,154 @@ export const sendUserSignupCompleteEmail = async (email: string) => {
     []
   );
   await EmailService?.sendEmail(email, rawEmail);
+};
+
+export const cachePendingProofOfEmployment = async (
+  userId: number,
+  orgId: number,
+  tenure: number,
+  sessionId: string
+): Promise<proofOfEmploymentCache> => {
+  const db = await SupabaseService.getSupabase();
+  const cache = await CacheService.getCache();
+  const { data, error } = await db!.from("orgs").select("name").eq("id", orgId);
+  if (error) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error,
+    };
+    throw err;
+  }
+  const cacheObject = {
+    id: userId,
+    proof: {
+      orgName: data[0].name,
+      tenure: tenure,
+    },
+  };
+  await cache?.set(
+    `delinzk:pending-add-poe:${sessionId}`,
+    JSON.stringify(cacheObject),
+    {
+      EX: 1800,
+    }
+  );
+  return cacheObject;
+};
+
+export const storeProofOfEmployment = async (sessionId: string) => {
+  const db = await SupabaseService.getSupabase();
+  const cache = await CacheService.getCache();
+  const socket = await SocketService.getSocket();
+  const proofOfEmployment = JSON.parse(
+    (await cache?.get(`delinzk:pending-add-poe:${sessionId}`)) ?? ""
+  ) as proofOfEmploymentCache;
+  console.log("PoE Cache fetched for session ID", sessionId, ":");
+  console.dir(proofOfEmployment, { depth: null });
+  const { data: data1, error: error1 } = await db!
+    .from("users")
+    .select("poes")
+    .eq("id", +proofOfEmployment.id);
+  if (error1) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error1,
+    };
+    throw err;
+  }
+  const existingPoes = data1[0].poes as Array<proofOfEmploymentCache["proof"]>;
+  const { error: error2 } = await db!
+    .from("users")
+    .update({
+      poes: [...existingPoes, JSON.stringify(proofOfEmployment.proof)],
+    })
+    .eq("id", +proofOfEmployment.id);
+  if (error2) {
+    const err = {
+      errorCode: 500,
+      name: "Database Error",
+      message: "Supabase database called failed",
+      databaseError: error2,
+    };
+    throw err;
+  }
+  socket
+    .to(sessionId)
+    .emit("proof-generated", JSON.stringify(proofOfEmployment.proof));
+  await cache?.DEL(`delinzk:pending-add-poe:${sessionId}`);
+  console.log(
+    "PoEs updated for userId",
+    proofOfEmployment.id,
+    "for session ID",
+    sessionId,
+    ":"
+  );
+  console.dir([...existingPoes, proofOfEmployment.proof], { depth: null });
+};
+
+export const generateProofQr = async (
+  sessionId: string,
+  userId: number,
+  orgId: number,
+  tenure: number
+) => {
+  const hostUrl = (await TunnelService.getTunnel())?.url;
+  const cache = await CacheService.getCache();
+  const request = auth.createAuthorizationRequestWithMessage(
+    "Verify your Proof-of-Employment issued via deLinZK.",
+    "I hereby verify that I have a Proof-of-Employment issued by a deLinZK verified organization.",
+    process.env.POLYGONID_ISSUERDID!,
+    `${hostUrl}/api/v1/user/add-poe-callback?sessionId=${sessionId}`
+  );
+  const requestId = v4();
+  request.id = requestId;
+  request.thid = requestId;
+  console.log("Request ID set as:", requestId);
+
+  const poeHash = KeyServices.createPoeHashKey(tenure, orgId);
+
+  const proofRequest: protocol.ZKPRequest = {
+    id: 1,
+    circuit_id: "credentialAtomicQuerySig",
+    rules: {
+      query: {
+        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
+        schema: {
+          type: "deLinZK Proof-of-Employment",
+          url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/77ea9cef-ebf0-4a71-9f49-d9fa7f4c6711.json-ld",
+        },
+        req: {
+          poeHash: {
+            $eq: poeHash,
+          },
+        },
+      },
+    },
+  };
+  const scope = request.body.scope ?? [];
+  request.body.scope = [...scope, proofRequest];
+  await cache?.set(
+    `delinzk:auth-request:${sessionId}`,
+    JSON.stringify(request),
+    {
+      EX: 1800,
+    }
+  );
+  console.log("Request cached for session", sessionId, ":");
+  console.dir(request, { depth: null });
+  Promise.all([cachePendingProofOfEmployment(userId, orgId, tenure, sessionId)])
+    .then((res) => {
+      console.log(
+        "Pending Proof-of-Employment cached for session",
+        sessionId,
+        ":"
+      );
+      console.dir(res[0], { depth: null });
+    })
+    .catch((err) => console.error(err));
+  return request;
 };
