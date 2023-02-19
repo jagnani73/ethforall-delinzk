@@ -198,7 +198,7 @@ const Topbar: React.FC = () => {
             },
             {
               content: "Applicants",
-              href: "/organization/jobs/jobs",
+              href: "/organization/jobs",
             },
             {
               content: "Logout",
