@@ -574,7 +574,7 @@ export const getOrgJobApplications = async (jobId: number) => {
   user:users(name,username,poes)
   `
     )
-    .eq("id", jobId);
+    .eq("job_id", jobId);
   if (error) {
     const err = {
       errorCode: 500,
@@ -584,5 +584,6 @@ export const getOrgJobApplications = async (jobId: number) => {
     };
     throw err;
   }
+  console.log("aaaa", data);
   return data;
 };
