@@ -114,3 +114,7 @@ export interface JobsProps {
   role: "employee" | "organization" | null;
   jobs: JobType[];
 }
+
+export interface JobsPageProps {
+  jobs: JobType[];
+}
