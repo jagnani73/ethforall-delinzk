@@ -93,7 +93,7 @@ const EmployeeProof: React.FC<EmployeeProofProps> = ({ organizations }) => {
         },
       });
 
-      socket.current.on("proof", () => {
+      socket.current.on("proof-generated", () => {
         replace("/employee/profile");
       });
     }
@@ -221,7 +221,7 @@ const EmployeeProof: React.FC<EmployeeProofProps> = ({ organizations }) => {
           }
           footer={
             <p className="mt-4 text-center font-bold text-red-600">
-              Make sure you use the wallet that was used to signup.
+              Make sure you use the wallet that was used to claim the PoE.
             </p>
           }
         />

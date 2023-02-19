@@ -9,7 +9,7 @@ import { EditIcon, EmailIcon, IndustryIcon } from "@/public/icons";
 import { Button, CustomField, Message, OrgDetails } from ".";
 import { EmpProfileUpdate } from "@/utils/services/api";
 import { useAuth } from "@/utils/store/auth";
-import { PopPromiseToast } from "@/utils/functions";
+import { DateParser, PopPromiseToast, TenureToDates } from "@/utils/functions";
 
 const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
   const { JWE } = useAuth();
@@ -46,7 +46,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
       >
         {() => (
           <Form className="w-full h-full">
-            <h2 className="my-4 mb-8 text-4xl font-bold ml-8">Profile</h2>
+            <h2 className="mb-6 text-4xl font-bold ml-8">Profile</h2>
 
             <div className="flex h-full items-start w-full">
               <div className="flex items-center text-center flex-col w-1/4 h-full bg-pale-purple pt-8">
@@ -65,19 +65,14 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                     name="employee_name"
                     type="text"
                     classnames={{
-                      wrapper: "relative mt-8",
+                      wrapper: "mt-8",
                       input:
                         "outline-none bg-transparent text-center text-2xl font-bold pb-0 focus:underline max-w-full",
                     }}
-                    description={
-                      <span className="absolute transform -translate-y-1/2 top-1/2 left-4 w-5 h-5 flex bg-pale-purple">
-                        <EditIcon />
-                      </span>
-                    }
                   />
                 )}
 
-                <p className="mb-8 font-medium text-xl">@{employee.username}</p>
+                <p className="mb-8 font-medium text-lg">@{employee.username}</p>
 
                 <div className="flex flex-col w-full gap-y-4 mb-12 text-left px-6">
                   <OrgDetails
@@ -115,7 +110,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                 </Button>
               </div>
 
-              <div className="w-3/4 text-xl px-12">
+              <div className="w-3/4 px-12">
                 <p className="flex items-center gap-x-4 text-slate-blue mb-2 text-xl">
                   {publicProfile ? (
                     "The hustler says hi 👋"
@@ -130,7 +125,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                 </p>
 
                 {publicProfile ? (
-                  <p className="h-40 overflow-y-auto border-dashed border-2 rounded-lg border-slate-blue p-4">
+                  <p className="h-40 overflow-y-auto border-dashed border-2 rounded-lg border-slate-blue p-4 text-lg">
                     {employee.about}
                   </p>
                 ) : (
@@ -141,10 +136,11 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                     classnames={{
                       wrapper: "h-40",
                       input:
-                        "w-full h-full p-4 transition-all outline-none overflow-visible overflow-y-auto border-dashed border-2 rounded-lg focus:border-solid border-slate-blue",
+                        "w-full h-full p-4 transition-all outline-none overflow-visible overflow-y-auto border-dashed border-2 rounded-lg focus:border-solid border-slate-blue text-lg",
                     }}
                   />
                 )}
+
                 <div className="mt-16">
                   <div className="flex justify-between items-center">
                     <p className="text-3xl">Proof-of-Employments</p>
@@ -156,13 +152,43 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                           className="text-sm px-10 py-2"
                           type="button"
                         >
-                          Add a claim
+                          Add a PoE
                         </Button>
                       </Link>
                     )}
                   </div>
 
-                  <p className="font-light mt-4">No claims to show.</p>
+                  <p className="mt-6 flex gap-x-8 overflow-x-auto">
+                    {employee.poes.length
+                      ? employee.poes.map(({ orgName, tenure }) => {
+                          const dates = TenureToDates(tenure.toString());
+                          return (
+                            <article
+                              key={orgName + tenure}
+                              className="w-fit whitespace-nowrap border-2 border-slate-blue rounded-lg px-4 py-2 mb-4"
+                            >
+                              <p className="font-bold text-2xl">{orgName}</p>
+
+                              <p className="text-slate-blue text-sm font-medium mt-4">
+                                FROM
+                              </p>
+                              <p className="text-lg mb-2">
+                                {DateParser(dates.startDate)}
+                              </p>
+
+                              <p className="text-slate-blue text-sm font-medium">
+                                TO
+                              </p>
+                              <p className="text-lg">
+                                {dates.endDate
+                                  ? DateParser(dates.endDate)
+                                  : "Present"}
+                              </p>
+                            </article>
+                          );
+                        })
+                      : "No claims to show."}
+                  </p>
                 </div>
               </div>
             </div>

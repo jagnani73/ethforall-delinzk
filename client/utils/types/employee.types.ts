@@ -33,6 +33,10 @@ export type EmployeeType = {
   about: string;
   email: string;
   photo: string;
+  poes: {
+    orgName: string;
+    tenure: number;
+  }[];
 };
 
 export interface EmployeeProfileProps {

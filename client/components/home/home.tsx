@@ -72,7 +72,7 @@ const Home: React.FC = () => {
                 <Button
                   key={role}
                   primary={false}
-                  className={`w-full text-left px-6 border-2 transition-all ${
+                  className={`w-full text-left border-2 transition-all ${
                     role === selectedRole
                       ? " border-slate-blue"
                       : "border-white"

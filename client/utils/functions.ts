@@ -26,6 +26,40 @@ export const DatesToTenure = (start: string, end: string | null): number => {
   return +`${_start}${_end}`;
 };
 
+export const TenureToDates = (
+  tenure: string
+): { startDate: Date; endDate: Date | null } => {
+  const sy = tenure.substring(0, 4);
+  const sm = tenure.substring(4, 6);
+  const sd = tenure.substring(6, 8);
+  const SD = [sy, sm, sd].join("-");
+  if (!tenure[8]) return { startDate: new Date(SD), endDate: null };
+  const ey = tenure.substring(8, 12);
+  const em = tenure.substring(12, 14);
+  const ed = tenure.substring(14, 16);
+  const ED = [ey, em, ed].join("-");
+  return { startDate: new Date(SD), endDate: new Date(ED) };
+};
+
+const months: string[] = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const DateParser = (date: Date): string => {
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+};
+
 export const PopPromiseToast = (
   promise: Promise<any>,
   loading: string,
