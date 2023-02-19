@@ -27,6 +27,7 @@ import {
   generateProofQr,
   storeProofOfEmployment,
   userApplyJob,
+  userGetApplications,
 } from "./user.service";
 import { authVerify, generateClaimAuth } from "../org/org.service";
 import getRawBody from "raw-body";
@@ -308,6 +309,23 @@ const handleApplyJob = async (
   }
 };
 
+const handleGetApplications = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = res.locals.user;
+    const applications = await userGetApplications(+id);
+    res.send({
+      success: true,
+      applications: applications,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 router.get(
   "/claim-poe",
   validateQuery("query", userClaimPoeRequestSchema),
@@ -349,5 +367,6 @@ router.post(
   validateQuery("body", applyJobRequestSchema),
   handleApplyJob
 );
+router.get("/applied-jobs", verifyUser, handleGetApplications);
 
 export default router;
