@@ -126,7 +126,11 @@ It has an extensive system architecture to support such actions, as well as a co
 
 ### 1. **System Architecture Diagram**
 
+![System Architecture](./client/public/sys-arch.png)
+
 ### 2. **Flow Diagram**
+
+![Flow Diagram](./client/public/flow-diag.png)
 
 # 👀 **How do you get started contributing to deLinZK?**
 
