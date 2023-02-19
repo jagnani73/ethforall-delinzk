@@ -47,6 +47,10 @@ const Topbar: React.FC = () => {
               content: "Add a PoE",
               href: "/employee/proof",
             },
+            {
+              content: "Logout",
+              href: "/",
+            },
           ],
         };
       }
@@ -56,6 +60,10 @@ const Topbar: React.FC = () => {
             {
               content: "Profile",
               href: "/employee/profile",
+            },
+            {
+              content: "Logout",
+              href: "/",
             },
           ],
         };
@@ -81,6 +89,16 @@ const Topbar: React.FC = () => {
         };
       }
 
+      case "/organization/claims": {
+        return {
+          routes: [
+            {
+              content: "Create Job",
+              href: "/organization/jobs/create",
+            },
+          ],
+        };
+      }
       case "/organization/signin": {
         return {
           routes: [
@@ -97,6 +115,16 @@ const Topbar: React.FC = () => {
             {
               content: "Signin",
               href: "/organization/signin",
+            },
+          ],
+        };
+      }
+      case "/organization/jobs/create": {
+        return {
+          routes: [
+            {
+              content: "Offer PoE",
+              href: "/organization/claims",
             },
           ],
         };

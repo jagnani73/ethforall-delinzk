@@ -205,3 +205,19 @@ export const EmpProofOrgs = async (): Promise<EmployeeProofOrg[]> => {
 
   return data.data;
 };
+
+export const OrgCreateJob = async (
+  token: string,
+  data: {
+    name: string;
+    description: string;
+  }
+): Promise<void> => {
+  await apiInstance.post("/org/create-job", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return;
+};

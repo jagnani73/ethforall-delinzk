@@ -136,7 +136,7 @@ const Profile: React.FC<ProfileProps> = ({ employee, publicProfile }) => {
                     classnames={{
                       wrapper: "h-40",
                       input:
-                        "w-full h-full p-4 transition-all outline-none overflow-visible overflow-y-auto border-dashed border-2 rounded-lg focus:border-solid border-slate-blue text-lg",
+                        "w-full h-full p-4 transition-all outline-none overflow-y-auto border-dashed border-2 rounded-lg focus:border-solid border-slate-blue text-lg",
                     }}
                   />
                 )}
