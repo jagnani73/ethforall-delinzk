@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,31 +8,128 @@ import { Button } from ".";
 const Topbar: React.FC = () => {
   const { asPath } = useRouter();
 
+  const NAVIGATION = useMemo<{
+    prompt?: string;
+    routes: { href: string; content: string }[];
+  }>(() => {
+    switch (asPath) {
+      case "/": {
+        return {
+          prompt: "Signin as",
+          routes: [
+            {
+              content: "Employee",
+              href: "/employee/signin",
+            },
+            {
+              content: "Organization",
+              href: "/organization/signin",
+            },
+          ],
+        };
+      }
+
+      case "/employee/claim": {
+        return {
+          prompt: "Don't have an account yet?",
+          routes: [
+            {
+              content: "Signup",
+              href: "/employee/signup",
+            },
+          ],
+        };
+      }
+      case "/employee/profile": {
+        return {
+          routes: [
+            {
+              content: "Add a PoE",
+              href: "/employee/proof",
+            },
+          ],
+        };
+      }
+      case "/employee/proof": {
+        return {
+          routes: [
+            {
+              content: "Profile",
+              href: "/employee/profile",
+            },
+          ],
+        };
+      }
+      case "/employee/signin": {
+        return {
+          routes: [
+            {
+              content: "Signup",
+              href: "/employee/signup",
+            },
+          ],
+        };
+      }
+      case "/employee/signup": {
+        return {
+          routes: [
+            {
+              content: "Signin",
+              href: "/employee/signin",
+            },
+          ],
+        };
+      }
+
+      case "/organization/signin": {
+        return {
+          routes: [
+            {
+              content: "Signup",
+              href: "/organization/signup",
+            },
+          ],
+        };
+      }
+      case "/organization/signup": {
+        return {
+          routes: [
+            {
+              content: "Signin",
+              href: "/organization/signin",
+            },
+          ],
+        };
+      }
+
+      default:
+        return {
+          routes: [],
+        };
+    }
+  }, [asPath]);
+
   return (
-    <aside className="py-4 bg-slate-blue px-28 flex items-center justify-between">
+    <aside className="h-24 bg-slate-blue px-28 flex items-center justify-between">
       <Link href="/">
         <figure>
           <Image src="/logo.png" alt="deLinZK logo" width={240} height={240} />
         </figure>
       </Link>
 
-      {asPath === "/" && (
-        <div className="flex items-center justify-center gap-x-8">
-          <p className="font-bold text-lg text-white">Signin as</p>
+      <div className="flex items-center justify-center gap-x-8">
+        {NAVIGATION.prompt && (
+          <p className="font-bold text-lg text-white">{NAVIGATION.prompt}</p>
+        )}
 
-          <Link href="/employee/signin">
+        {NAVIGATION.routes.map(({ content, href }) => (
+          <Link key={href + content} href={href}>
             <Button primary={false} className="w-32">
-              Employee
+              {content}
             </Button>
           </Link>
-
-          <Link href="/organization/signin">
-            <Button primary={false} className="w-32">
-              Organization
-            </Button>
-          </Link>
-        </div>
-      )}
+        ))}
+      </div>
     </aside>
   );
 };
