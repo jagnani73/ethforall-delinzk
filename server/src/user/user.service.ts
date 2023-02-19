@@ -170,8 +170,9 @@ export const fetchUserPublicDetails = async (username: string) => {
     };
     throw err;
   }
-
-  return data[0];
+  const parsedData = data[0];
+  parsedData.poes = parsedData.poes.map((poe: string) => JSON.parse(poe));
+  return parsedData;
 };
 
 export const fetchUserPrivateDetails = async (did: string) => {
@@ -186,7 +187,9 @@ export const fetchUserPrivateDetails = async (did: string) => {
     };
     throw err;
   }
-  return data[0];
+  const parsedData = data[0];
+  parsedData.poes = parsedData.poes.map((poe: string) => JSON.parse(poe));
+  return parsedData;
 };
 
 export const sendUserSignupCompleteEmail = async (email: string) => {
@@ -227,7 +230,10 @@ export const cachePendingProofOfEmployment = async (
   };
   await cache?.set(
     `delinzk:pending-add-poe:${sessionId}`,
-    JSON.stringify(cacheObject)
+    JSON.stringify(cacheObject),
+    {
+      EX: 1800,
+    }
   );
   return cacheObject;
 };
@@ -236,13 +242,15 @@ export const storeProofOfEmployment = async (sessionId: string) => {
   const db = await SupabaseService.getSupabase();
   const cache = await CacheService.getCache();
   const socket = await SocketService.getSocket();
-  const proofOfEmployment = (await cache?.getDel(
-    `delinzk:pending-add-poe:${sessionId}`
-  )) as unknown as proofOfEmploymentCache;
+  const proofOfEmployment = JSON.parse(
+    (await cache?.get(`delinzk:pending-add-poe:${sessionId}`)) ?? ""
+  ) as proofOfEmploymentCache;
+  console.log("PoE Cache fetched for session ID", sessionId, ":");
+  console.dir(proofOfEmployment, { depth: null });
   const { data: data1, error: error1 } = await db!
     .from("users")
     .select("poes")
-    .eq("id", proofOfEmployment.id);
+    .eq("id", +proofOfEmployment.id);
   if (error1) {
     const err = {
       errorCode: 500,
@@ -252,15 +260,13 @@ export const storeProofOfEmployment = async (sessionId: string) => {
     };
     throw err;
   }
-  const existingPoes = JSON.parse(data1[0].poes) as Array<
-    proofOfEmploymentCache["proof"]
-  >;
+  const existingPoes = data1[0].poes as Array<proofOfEmploymentCache["proof"]>;
   const { error: error2 } = await db!
     .from("users")
     .update({
       poes: [...existingPoes, JSON.stringify(proofOfEmployment.proof)],
     })
-    .eq("id", proofOfEmployment.id);
+    .eq("id", +proofOfEmployment.id);
   if (error2) {
     const err = {
       errorCode: 500,
@@ -273,6 +279,7 @@ export const storeProofOfEmployment = async (sessionId: string) => {
   socket
     .to(sessionId)
     .emit("proof-generated", JSON.stringify(proofOfEmployment.proof));
+  await cache?.DEL(`delinzk:pending-add-poe:${sessionId}`);
   console.log(
     "PoEs updated for userId",
     proofOfEmployment.id,
