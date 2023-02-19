@@ -497,6 +497,35 @@ export const addJob = async (
     };
     throw err;
   }
+  Promise.all([
+    (async () => {
+      const db = await SupabaseService.getSupabase();
+      const { data, error } = await db!
+        .from("orgs")
+        .select("email")
+        .eq("id", +orgId);
+      if (error) {
+        const err = {
+          errorCode: 500,
+          name: "Database Error",
+          message: "Supabase database called failed",
+          databaseError: error,
+        };
+        throw err;
+      }
+      const rawEmail = await EmailService.generateEmail(
+        "job-post-success",
+        data[0].email,
+        "Hello Organization Admin 👷! You've posted a job on deLinZK",
+        {
+          jobName: name,
+          jobDesc: description,
+        },
+        []
+      );
+      await EmailService.sendEmail(data[0].email, rawEmail);
+    })(),
+  ]).catch((e) => console.error(e));
   return data[0].id;
 };
 
