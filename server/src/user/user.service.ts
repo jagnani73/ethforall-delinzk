@@ -51,10 +51,11 @@ export const generateAuthQr = async (
 ) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/user/${action}-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -287,7 +288,7 @@ export const generateProofQr = async (
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Proof-of-Employment issued via deLinZK.",
     "I hereby verify that I have a Proof-of-Employment issued by a deLinZK verified organization.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/user/add-poe-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -452,10 +453,11 @@ export const getAllJobsByUser = async (applicationIds: string[]) => {
 export const generateClaimAuth = async (reqId: string) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/user/claim-poe-callback?sessionId=${reqId}`
   );
   const requestId = v4();

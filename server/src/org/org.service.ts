@@ -8,7 +8,6 @@ import CacheService from "../services/cache.service";
 import SocketService from "../services/socket.service";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
-import { getAdminAuthToken } from "../admin/admin.service";
 import TokenService from "../services/token.service";
 import PolygonIDService from "../services/polygonid.service";
 
@@ -24,7 +23,7 @@ export const generateAuthQr = async (sessionId: string) => {
   const request = auth.createAuthorizationRequestWithMessage(
     "Sign in as a verified organization into deLinZK.",
     "I hereby verify that I am an verified organization of deLinZK.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/org/sign-in-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -257,10 +256,11 @@ export const sendEmailToOrganization = async (
 export const generateBasicAuthQr = async (reqId: string) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/org/sign-up-complete-callback?sessionId=${reqId}`
   );
   const requestId = v4();
