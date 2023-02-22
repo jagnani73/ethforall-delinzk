@@ -14,9 +14,7 @@ import {
   storeOrgDid,
   clearSignupCache,
   generateOrgClaim,
-  Attributes,
-  generateClaimOffer,
-  storeClaimOffer,
+  storeClaimPoeHash,
   sendClaimOfferEmail,
   sendOrganizationSignupCompleteEmail,
   getOrgsData,
@@ -178,7 +176,7 @@ const handleOrgSignUpCompleteCallback = async (
     console.dir(result, { depth: null });
     const orgDid = result?.from!;
     const orgId = await storeOrgDid(orgDid, sessionId);
-    await generateOrgClaim(sessionId);
+    await generateOrgClaim(sessionId, orgDid);
     await clearSignupCache(orgId, sessionId);
     res.send("OK");
   } catch (err) {
@@ -196,17 +194,7 @@ const handleOrgCreatePoe = async (
       req.body as orgCreatePoeRequest;
     const { id, did } = res.locals.org;
     const poeHash = KeyServices.createPoeHashKey(tenure, id);
-    const attributes: Attributes = [
-      {
-        attributeKey: "poeHash",
-        attributeValue: poeHash,
-      },
-    ];
-    const claimOfferId = await generateClaimOffer(
-      process.env.POLYGONID_CLAIMSCHEMAID_PROOF_OF_EMPLOYMENT!,
-      attributes
-    );
-    const reqId = await storeClaimOffer(claimOfferId);
+    const reqId = await storeClaimPoeHash(poeHash);
     await sendClaimOfferEmail(email, reqId);
     res.json({
       success: true,

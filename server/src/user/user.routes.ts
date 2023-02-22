@@ -20,7 +20,6 @@ import {
   fetchUserPrivateDetails,
   fetchUserPublicDetails,
   generateAuthQr,
-  listenForClaimAuthComplete,
   sendUserSignupCompleteEmail,
   storeUserPhoto,
   updateUserDetails,
@@ -29,11 +28,14 @@ import {
   userApplyJob,
   userGetApplications,
   getAllJobsByUser,
+  generateClaimAuth,
+  createUserPoeClaim,
 } from "./user.service";
-import { authVerify, generateClaimAuth } from "../org/org.service";
+import { authVerify } from "../org/org.service";
 import getRawBody from "raw-body";
 import { parseUserPhoto } from "../middleware/multer.middleware";
 import verifyUser from "../middleware/verify-user.middleware";
+import SocketService from "../services/socket.service";
 
 const router = Router();
 
@@ -43,18 +45,42 @@ const handleClaimPoe = async (
   next: NextFunction
 ) => {
   const { reqId } = req.query as userClaimPoeRequest;
-  const { available, claimOfferId } = await checkIfClaimOfferExists(reqId);
+  const { available, claimPoeHash } = await checkIfClaimOfferExists(reqId);
   if (!available) {
     return res.status(404).json({
       success: false,
       message: `Link has expired / has been already claimed.`,
     });
   } else {
-    const { claimOfferSessionId, qrCode } = await generateClaimAuth(
-      claimOfferId!
-    );
-    await listenForClaimAuthComplete(reqId, claimOfferId!, claimOfferSessionId);
+    const qrCode = await generateClaimAuth(reqId!);
     res.json(qrCode);
+  }
+};
+
+const handleClaimPoeCallback = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sessionId = req.query.sessionId;
+    console.log("Callback session ID:", sessionId);
+    const raw = await getRawBody(req);
+    const jwz = raw.toString().trim();
+    console.log("JWZ Received:");
+    console.dir(jwz, { depth: null });
+    const result = await authVerify(sessionId as string, jwz, false);
+    console.log("handleOrgSignInCallback authResponse:");
+    console.dir(result, { depth: null });
+    const userDid = result?.from;
+    const qrData = await createUserPoeClaim(sessionId! as string, userDid!);
+    console.log("User PoE claim generated for session ID", sessionId, ":");
+    console.dir(qrData, { depth: null });
+    const socket = SocketService.getSocket();
+    socket.to(sessionId as string).emit("user-claim", JSON.stringify(qrData));
+    res.send("OK");
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -351,6 +377,7 @@ router.get(
   validateQuery("query", userClaimPoeRequestSchema),
   handleClaimPoe
 );
+router.post("/claim-poe-callback", handleClaimPoeCallback);
 router.get("/sign-up", injectSessionId, handleUserSignUp);
 router.get("/sign-in", injectSessionId, handleUserSignIn);
 router.post("/sign-up-callback", handleUserSignUpCallback);
