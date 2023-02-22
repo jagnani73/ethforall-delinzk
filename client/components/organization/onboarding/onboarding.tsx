@@ -14,7 +14,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
   const socket = useRef<Socket>();
 
   const [qr, setQr] = useState<string>(linkQR);
-  const [phase, setPhase] = useState<0 | 1 | 2>(0);
+  const [phase, setPhase] = useState<0 | 1>(0);
 
   const {
     query: { reqId },
@@ -35,14 +35,9 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
         },
       });
 
-      socket.current.on("org-auth", (data) => {
-        setQr(data);
-        setPhase(1);
-      });
-
       socket.current.on("org-claim", (data) => {
         setQr(data);
-        setPhase(2);
+        setPhase(1);
       });
     }
 
@@ -54,7 +49,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
       {
         heading: (
           <>
-            <span className="text-slate-blue">1/3</span> Connect your Wallet
+            <span className="text-slate-blue">1/2</span> Connect your Wallet
             Address to deLinZK!
           </>
         ),
@@ -78,21 +73,7 @@ const OrganizationOnboarding: React.FC<OrganizationOnboardingProps> = ({
       {
         heading: (
           <>
-            <span className="text-slate-blue">2/3</span> Authenticate your
-            wallet address!
-          </>
-        ),
-        description: (
-          <>
-            Once connected, we need to Authenticate your wallet address to
-            generate a verified claim.
-          </>
-        ),
-      },
-      {
-        heading: (
-          <>
-            <span className="text-slate-blue">3/3</span> Claim your offer as a
+            <span className="text-slate-blue">2/2</span> Claim your offer as a
             verified organization!
           </>
         ),
