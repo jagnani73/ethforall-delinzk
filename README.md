@@ -17,12 +17,6 @@ Team <b>DreamTeam</b> present <b>deLinZK</b>.
   Built with ❤️, delivered on ☕, verified by <a href="https://polygonid.com" target="_blank"><b>Polygon 🆔</b></a> <span>☕</span> at <a href="https://ethforall.devfolio.co/">ETHForAll Online VIII</a>.
 </blockquote>
 
-# ⚠️ **DISCLAIMER:** The web application is compatible with PolygonID mobile app v1.0.3
-
-During the creation of this platform, [`@iden3/js-iden3-auth`](https://github.com/iden3/js-iden3-auth/tree/v0.1.6) was in `v0.1.6`, and PolygonID mobile app was at `v1.0.3`. Due to the recent changes in Iden3 circuits, and Polygon ID mobile app shifting from a custom claim format to a W3C Verifiable Credentials, the web application is incompatible in recent times.
-
-**But,** we are actively working on it! Track our progress here ✨ [**#38**](https://github.com/jagnani73/ethforall-delinzk/issues/38)
-
 <div align="center"><br /><br /><h1><b>Video Demo 📼: <a href="https://youtu.be/juNUuhQXA-U" target="_blank">HERE</a></b></h1></div><br />
 
 # 💡 **Problem Statement**
@@ -166,7 +160,7 @@ It has an extensive system architecture to support such actions, as well as a co
 
 # ⏭️ **What's next for deLinZK?**
 
-- One of the major aim of deLinZK is to migrate to W3C VC and Iden3 V2 circuits in the next major launch.
+- One of the major aim of deLinZK is to make the website more mobile-friendly, using deeplinks and more responsive design.
 - We need to also figure out a more secure way of storing metadata of the organizations and users.
 - Code cleanup and documentation never leaves the chat.
 - Shifting from communicating with e-mail to some Web3 native solution.
