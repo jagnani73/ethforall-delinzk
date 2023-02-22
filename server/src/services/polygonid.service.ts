@@ -73,6 +73,32 @@ class PolygonIDService {
       };
     }
   }
+  public static async createVerifiedPoeClaim(userDid: string, poeHash: number) {
+    try {
+      const { data } = await this.apiInstance.post("/claims", {
+        credentialSchema: process.env.POLYGONID_CLAIMSCHEMA_VERIFIED_POE!,
+        type: "deLinZKProofOfEmployment",
+        credentialSubject: {
+          id: userDid,
+          poeHash: poeHash,
+        },
+      });
+      const claimId = data.id;
+      const { data: qrData } = await this.apiInstance.get(
+        `/claims/${claimId}/qrcode`
+      );
+      return qrData;
+    } catch (err) {
+      console.error("Error in creating verified Proof-of-Employment claim!");
+      console.error(err);
+      throw {
+        errorCode: 500,
+        name: "Polygon ID Error",
+        message: "Error in creating verified Proof-of-Employment claim!",
+        polygonIdError: err,
+      };
+    }
+  }
 }
 
 export default PolygonIDService;

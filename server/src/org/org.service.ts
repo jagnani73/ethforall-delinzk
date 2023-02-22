@@ -308,45 +308,6 @@ export const clearSignupCache = async (orgId: number, sessionId: string) => {
   await cache?.DEL(`delinzk:verification-pending:${orgId}`);
 };
 
-export const generateClaimOffer = async (
-  schemaId: string,
-  attributes: Attributes
-) => {
-  const authToken = await getAdminAuthToken();
-  const { data } = await axios.post(
-    `https://api-staging.polygonid.com/v1/issuers/${process.env.POLYGONID_ISSUERID}/schemas/${schemaId}/offers`,
-    {
-      attributes: attributes,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    }
-  );
-  return data.id;
-};
-
-export const generateClaimAuth = async (
-  claimOfferId: string
-): Promise<{
-  qrCode: Record<string, any>;
-  claimOfferSessionId: string;
-}> => {
-  console.log("Claim offer ID:", claimOfferId);
-  const { data } = await axios.post(
-    `https://api-staging.polygonid.com/v1/offers-qrcode/${claimOfferId}`
-  );
-  const qrCode = data.qrcode;
-  const claimOfferSessionId = data.sessionID;
-  console.log("Claim offer auth generated:");
-  console.dir(qrCode, { depth: null });
-  return {
-    qrCode: qrCode,
-    claimOfferSessionId: claimOfferSessionId,
-  };
-};
-
 export const generateOrgClaim = async (sessionId: string, orgDid: string) => {
   const qrData = await PolygonIDService.createVerifiedOrgClaim(orgDid);
   const socket = await SocketService.getSocket();
@@ -355,36 +316,10 @@ export const generateOrgClaim = async (sessionId: string, orgDid: string) => {
   socket.to(sessionId).emit("org-claim", JSON.stringify(qrData));
 };
 
-export const checkClaimStatus = async (offerId: string, sessionId: string) => {
-  while (true) {
-    try {
-      const { data } = await axios.get(
-        `https://api-staging.polygonid.com/v1/offers-qrcode/${offerId}?sessionID=${sessionId}`
-      );
-      if (data.status === "done") {
-        console.log(
-          "Claim offer ID",
-          offerId,
-          "session ID",
-          sessionId,
-          "QR generated:"
-        );
-        console.dir(data.qrcode, { depth: null });
-        return data.qrcode;
-      }
-      await new Promise((resolve, reject) =>
-        setTimeout(() => resolve(0), 1000)
-      );
-    } catch (err) {
-      break;
-    }
-  }
-};
-
-export const storeClaimOffer = async (claimOfferId: string) => {
+export const storeClaimPoeHash = async (poeHash: number) => {
   const reqId = v4();
   const cache = await CacheService.getCache();
-  await cache?.set(`delinzk:claim-pending:${reqId}`, claimOfferId, {
+  await cache?.set(`delinzk:claim-pending:${reqId}`, poeHash, {
     EX: 604800,
   });
   return reqId;
