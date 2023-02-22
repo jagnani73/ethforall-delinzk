@@ -178,7 +178,7 @@ const handleOrgSignUpCompleteCallback = async (
     console.dir(result, { depth: null });
     const orgDid = result?.from!;
     const orgId = await storeOrgDid(orgDid, sessionId);
-    await generateOrgClaim(sessionId);
+    await generateOrgClaim(sessionId, orgDid);
     await clearSignupCache(orgId, sessionId);
     res.send("OK");
   } catch (err) {

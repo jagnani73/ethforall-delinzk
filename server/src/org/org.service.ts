@@ -10,6 +10,7 @@ import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
 import { getAdminAuthToken } from "../admin/admin.service";
 import TokenService from "../services/token.service";
+import PolygonIDService from "../services/polygonid.service";
 
 export type Attributes = Array<{
   attributeKey: string;
@@ -19,6 +20,7 @@ export type Attributes = Array<{
 export const generateAuthQr = async (sessionId: string) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Sign in as a verified organization into deLinZK.",
     "I hereby verify that I am an verified organization of deLinZK.",
@@ -31,18 +33,15 @@ export const generateAuthQr = async (sessionId: string) => {
   console.log("Request ID set as:", requestId);
   const proofRequest: protocol.ZKPRequest = {
     id: 1,
-    circuit_id: "credentialAtomicQuerySig",
-    rules: {
-      query: {
-        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
-        schema: {
-          type: "deLinZK Verified Organization",
-          url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/fea6164e-c164-4ce1-b204-4e841698ac33.json-ld",
-        },
-        req: {
-          verified: {
-            $eq: 1,
-          },
+    circuitId: "credentialAtomicQuerySigV2",
+    query: {
+      allowedIssuers: [issuerDid],
+      type: "ProofOfdeLinZKVerifiedOrganization",
+      context:
+        "https://gist.githubusercontent.com/gitaalekhyapaul/c6d618a224a640655fa0b4c0fed274ec/raw/delinzk-verified-org.json-ld",
+      credentialSubject: {
+        isdeLinZKVerified: {
+          $eq: 1,
         },
       },
     },
@@ -74,13 +73,12 @@ export const authVerify = async (
   const sLoader = new loaders.UniversalSchemaLoader("ipfs.io");
   const ethStateResolver = new resolver.EthStateResolver(
     `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_APIKEY}`,
-    "0x46Fd04eEa588a3EA7e9F055dd691C688c4148ab3"
+    "0x134B1BE34911E39A8397ec6289782989729807a4"
   );
-  const verifier = new auth.Verifier(
-    verificationKeyLoader,
-    sLoader,
-    ethStateResolver
-  );
+  const resolvers = {
+    ["polygon:mumbai"]: ethStateResolver,
+  };
+  const verifier = new auth.Verifier(verificationKeyLoader, sLoader, resolvers);
   try {
     const authRequest = (await cache?.get(
       `delinzk:auth-request:${sessionId}`
@@ -349,27 +347,12 @@ export const generateClaimAuth = async (
   };
 };
 
-export const generateOrgClaim = async (sessionId: string) => {
-  const claimParams: Attributes = [
-    {
-      attributeKey: "verified",
-      attributeValue: 1,
-    },
-  ];
-  const claimOfferId = await generateClaimOffer(
-    process.env.POLYGONID_CLAIMSCHEMAID_VERIFIED_ORG!,
-    claimParams
-  );
-  const { qrCode: claimQr, claimOfferSessionId } = await generateClaimAuth(
-    claimOfferId
-  );
+export const generateOrgClaim = async (sessionId: string, orgDid: string) => {
+  const qrData = await PolygonIDService.createVerifiedOrgClaim(orgDid);
   const socket = await SocketService.getSocket();
-  socket.to(sessionId).emit("org-auth", JSON.stringify(claimQr));
-  Promise.all([checkClaimStatus(claimOfferId, claimOfferSessionId)]).then(
-    (qrCodeData) => {
-      socket.to(sessionId).emit("org-claim", JSON.stringify(qrCodeData[0]));
-    }
-  );
+  console.log("Claim generated for verified organization:");
+  console.dir(qrData, { depth: null });
+  socket.to(sessionId).emit("org-claim", JSON.stringify(qrData));
 };
 
 export const checkClaimStatus = async (offerId: string, sessionId: string) => {

@@ -7,6 +7,7 @@ import { auth, protocol } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
 import KeyServices from "../services/key.service";
+import PolygonIDService from "../services/polygonid.service";
 
 export interface UpdateUserData {
   about: string;
@@ -298,6 +299,7 @@ export const generateProofQr = async (
 ) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Proof-of-Employment issued via deLinZK.",
     "I hereby verify that I have a Proof-of-Employment issued by a deLinZK verified organization.",
@@ -313,18 +315,15 @@ export const generateProofQr = async (
 
   const proofRequest: protocol.ZKPRequest = {
     id: 1,
-    circuit_id: "credentialAtomicQuerySig",
-    rules: {
-      query: {
-        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
-        schema: {
-          type: "deLinZK Proof-of-Employment",
-          url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/77ea9cef-ebf0-4a71-9f49-d9fa7f4c6711.json-ld",
-        },
-        req: {
-          poeHash: {
-            $eq: poeHash,
-          },
+    circuitId: "credentialAtomicQuerySigV2",
+    query: {
+      allowedIssuers: [issuerDid],
+      type: "deLinZKProofOfEmployment",
+      context:
+        "https://gist.githubusercontent.com/gitaalekhyapaul/d13f9429ba2dabbb3764f3ff2656d29c/raw/delinzk-proof-of-employment.json-ld",
+      credentialSubject: {
+        poeHash: {
+          $eq: poeHash,
         },
       },
     },
