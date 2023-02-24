@@ -91,23 +91,3 @@ export const fetchOrganizations = async () => {
 
   return data;
 };
-
-export const getAdminAuthToken = async (): Promise<string> => {
-  const cache = await CacheService.getCache();
-  const authToken = await cache?.get("delinzk:admin:auth-token");
-  if (authToken) {
-    return authToken;
-  } else {
-    const { data } = await axios.post(
-      "https://api-staging.polygonid.com/v1/orgs/sign-in",
-      {
-        email: process.env.POLYGONID_ADMIN_EMAIL!,
-        password: process.env.POLYGONID_ADMIN_PASSWORD!,
-      }
-    );
-    await cache?.set("delinzk:admin:auth-token", data.token, {
-      EX: 86400,
-    });
-    return data.token;
-  }
-};

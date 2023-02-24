@@ -10,6 +10,7 @@ import SupabaseService from "./services/supabase.service";
 import adminRoutes from "./admin/admin.routes";
 import EmailService from "./services/email.service";
 import TokenService from "./services/token.service";
+import PolygonIDService from "./services/polygonid.service";
 import userRoutes from "./user/user.routes";
 import jobRoutes from "./jobs/jobs.routes";
 
@@ -61,6 +62,7 @@ Promise.all([
   SupabaseService.initSupabase(),
   EmailService.initEmailClient(),
   TokenService.initTokenService(),
+  PolygonIDService.initService(),
 ])
   .then((_) => {
     const server = app.listen(process.env.PORT!, async () => {

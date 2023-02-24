@@ -1,12 +1,12 @@
 import CacheService from "../services/cache.service";
 import SocketService from "../services/socket.service";
-import { checkClaimStatus } from "../org/org.service";
 import { v4 } from "uuid";
 import TunnelService from "../services/tunnel.service";
 import { auth, protocol } from "@iden3/js-iden3-auth";
 import SupabaseService from "../services/supabase.service";
 import EmailService from "../services/email.service";
 import KeyServices from "../services/key.service";
+import PolygonIDService from "../services/polygonid.service";
 
 export interface UpdateUserData {
   about: string;
@@ -30,13 +30,13 @@ export interface UserData extends UpdateUserData {
 
 export const checkIfClaimOfferExists = async (
   reqId: string
-): Promise<{ available: boolean; claimOfferId?: string }> => {
+): Promise<{ available: boolean; claimPoeHash?: string }> => {
   const cache = await CacheService.getCache();
-  const claimOfferId = await cache?.get(`delinzk:claim-pending:${reqId}`);
-  if (claimOfferId) {
+  const claimPoeHash = await cache?.get(`delinzk:claim-pending:${reqId}`);
+  if (claimPoeHash) {
     return {
       available: true,
-      claimOfferId: claimOfferId,
+      claimPoeHash: claimPoeHash,
     };
   } else {
     return {
@@ -45,31 +45,17 @@ export const checkIfClaimOfferExists = async (
   }
 };
 
-export const listenForClaimAuthComplete = async (
-  reqId: string,
-  claimOfferId: string,
-  claimOfferSessionId: string
-) => {
-  const socket = await SocketService.getSocket();
-  const cache = await CacheService.getCache();
-  Promise.all([checkClaimStatus(claimOfferId, claimOfferSessionId)]).then(
-    async (qrCodeData) => {
-      socket.to(reqId).emit("user-claim", JSON.stringify(qrCodeData[0]));
-      await cache?.DEL(`delinzk:claim-pending:${reqId}`);
-    }
-  );
-};
-
 export const generateAuthQr = async (
   sessionId: string,
   action: "sign-up" | "sign-in"
 ) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Polygon ID wallet.",
     "I hereby verify that I possess a valid DID.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/user/${action}-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -298,10 +284,11 @@ export const generateProofQr = async (
 ) => {
   const hostUrl = (await TunnelService.getTunnel())?.url;
   const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
   const request = auth.createAuthorizationRequestWithMessage(
     "Verify your Proof-of-Employment issued via deLinZK.",
     "I hereby verify that I have a Proof-of-Employment issued by a deLinZK verified organization.",
-    process.env.POLYGONID_ISSUERDID!,
+    issuerDid,
     `${hostUrl}/api/v1/user/add-poe-callback?sessionId=${sessionId}`
   );
   const requestId = v4();
@@ -313,18 +300,15 @@ export const generateProofQr = async (
 
   const proofRequest: protocol.ZKPRequest = {
     id: 1,
-    circuit_id: "credentialAtomicQuerySig",
-    rules: {
-      query: {
-        allowedIssuers: [process.env.POLYGONID_ISSUERDID!],
-        schema: {
-          type: "deLinZK Proof-of-Employment",
-          url: "https://s3.eu-west-1.amazonaws.com/polygonid-schemas/77ea9cef-ebf0-4a71-9f49-d9fa7f4c6711.json-ld",
-        },
-        req: {
-          poeHash: {
-            $eq: poeHash,
-          },
+    circuitId: "credentialAtomicQuerySigV2",
+    query: {
+      allowedIssuers: [issuerDid],
+      type: "deLinZKProofOfEmployment",
+      context:
+        "https://gist.githubusercontent.com/gitaalekhyapaul/d13f9429ba2dabbb3764f3ff2656d29c/raw/delinzk-proof-of-employment.json-ld",
+      credentialSubject: {
+        poeHash: {
+          $eq: poeHash,
         },
       },
     },
@@ -464,4 +448,42 @@ export const getAllJobsByUser = async (applicationIds: string[]) => {
     else return true;
   });
   return parsedData;
+};
+
+export const generateClaimAuth = async (reqId: string) => {
+  const hostUrl = (await TunnelService.getTunnel())?.url;
+  const cache = await CacheService.getCache();
+  const issuerDid = await PolygonIDService.getIssuerDID();
+  const request = auth.createAuthorizationRequestWithMessage(
+    "Verify your Polygon ID wallet.",
+    "I hereby verify that I possess a valid DID.",
+    issuerDid,
+    `${hostUrl}/api/v1/user/claim-poe-callback?sessionId=${reqId}`
+  );
+  const requestId = v4();
+  request.id = requestId;
+  request.thid = requestId;
+  console.log("Basic Auth Request ID set as:", requestId);
+  await cache?.set(`delinzk:auth-request:${reqId}`, JSON.stringify(request), {
+    EX: 1800,
+  });
+  console.log("Request cached for basic auth session", reqId, ":");
+  console.dir(request, { depth: null });
+  return request;
+};
+
+export const createUserPoeClaim = async (
+  sessionId: string,
+  userDid: string
+) => {
+  const cache = await CacheService.getCache();
+  const poeHash = +(
+    (await cache?.get(`delinzk:claim-pending:${sessionId}`)) ?? "0"
+  );
+  await cache?.DEL(`delinzk:claim-pending:${sessionId}`);
+  const qrData = await PolygonIDService.createVerifiedPoeClaim(
+    userDid,
+    poeHash
+  );
+  return qrData;
 };
