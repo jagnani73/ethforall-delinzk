@@ -17,7 +17,7 @@ Team <b>DreamTeam</b> present <b>deLinZK</b>.
   Built with ❤️, delivered on ☕, verified by <a href="https://polygonid.com" target="_blank"><b>Polygon 🆔</b></a> <span>☕</span> at <a href="https://ethforall.devfolio.co/">ETHForAll Online VIII</a>.
 </blockquote>
 
-<div align="center"><br /><br /><h1><b>Video Demo 📼: <a href="https://youtu.be/juNUuhQXA-U" target="_blank">HERE</a></b></h1></div><br />
+<div align="center"><br /><br /><h1><b>Video Demo 📼: <a href="https://youtu.be/VlDw8FXiws4" target="_blank">HERE</a></b></h1></div><br />
 
 # 💡 **Problem Statement**
 
